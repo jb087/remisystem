@@ -54,6 +54,27 @@ router.get('/notes', function (request, response, next) {
     noteService.getNotes(response)
 });
 
+/**
+ * @swagger
+ * /api/note:
+ *   post:
+ *     description: It is used to create note
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: note
+ *         description: Note object
+ *         in: body
+ *         required: true
+ *         type: string
+ *         schema:
+ *           $ref: '#/definitions/NewNote'
+ *     responses:
+ *       200:
+ *         description: Note successfully created
+ *         schema:
+ *           $ref: '#/definitions/Note'
+ */
 router.post('/note', function (request, response, next) {
     noteService.createNote(request.body, response)
 });
