@@ -12,4 +12,8 @@ router.use(function (req, res, next) {
     next();
 });
 
+router.get('/notes', function (request, response, next) {
+    noteService.getNotes(response)
+});
+
 module.exports = router;
