@@ -12,6 +12,44 @@ router.use(function (req, res, next) {
     next();
 });
 
+/**
+ * @swagger
+ * definitions:
+ *   NewNote:
+ *     type: object
+ *     properties:
+ *       title:
+ *         type: string
+ *       description:
+ *         type: string
+ *     required:
+ *       - title
+ *       - description
+ *
+ *   Note:
+ *     allOf:
+ *       - $ref: '#/definitions/NewNote'
+ *       - type: object
+ *         properties:
+ *           id:
+ *             type: string
+ *         required:
+ *           - id
+ */
+
+/**
+ * @swagger
+ * /api/notes:
+ *   get:
+ *     description: It is used to get all notes
+ *     responses:
+ *       200:
+ *         description: A successful response
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Note'
+ */
 router.get('/notes', function (request, response, next) {
     noteService.getNotes(response)
 });

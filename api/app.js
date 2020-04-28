@@ -4,8 +4,23 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const api = require('./routes/api');
-
 const app = express();
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: "RemiSystem Api",
+            description: "RemiSystem Api Documentation",
+            version: 1.0
+        },
+    },
+    apis: ['./routes/*.js']
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(logger('dev'));
 app.use(express.json());
