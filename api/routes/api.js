@@ -1,14 +1,9 @@
 const express = require('express');
-const fetch = require('node-fetch');
-const CronJob = require('cron').CronJob;
 
 const router = express.Router();
 
 const noteService = require('../service/noteService');
 const reminderService = require('../service/reminderService');
-
-const host = "http://localhost:9000/";
-const getRemindersPath = host + "api/reminders";
 
 router.use(function (request, response, next) {
     response.header('Access-Control-Allow-Origin', '*');
@@ -177,30 +172,5 @@ router.get('/reminders/:noteId', function (request, response, next) {
 router.post('/reminder', function (request, response, next) {
     reminderService.createReminder(request.body, response);
 });
-
-let jobs = new Map();
-
-let job = new CronJob("0/2 * * * * *", function () {
-    fetch(getRemindersPath, {
-        method: "GET",
-        headers: {"Content-Type": "application/json"}
-    })
-        .then(response => response.json())
-        .then(reminders => runReminders(reminders));
-}, null, true, 'Europe/Warsaw');
-job.start();
-
-function runReminders(reminders) {
-    reminders.forEach(reminder => {
-        if (jobs.get(reminder.id) === undefined) {
-            let j = new CronJob(reminder.time, function () {
-                console.log("JobId: " + reminder.id)
-            }, null, true, 'Europe/Warsaw');
-            j.start();
-
-            jobs.set(reminder.id, j);
-        }
-    })
-}
 
 module.exports = router;

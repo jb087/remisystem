@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const api = require('./routes/api');
+const schedulerService = require('./service/schedulerService');
 const app = express();
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -29,5 +30,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/api", api);
+app.use("/api", schedulerService);
 
 module.exports = app;
