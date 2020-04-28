@@ -13,7 +13,7 @@ let db = new sqlite.Database(dbPath, (error) => {
 });
 
 exports.getRemindersByNoteId = (noteId, response) => {
-    db.all("SELECT * FROM REMINDER WHERE NOTE_ID = ?", noteId,  function (error, result) {
+    db.all("SELECT * FROM REMINDER WHERE NOTE_ID = ?", noteId, function (error, result) {
         if (error) {
             throw error;
         }
@@ -22,4 +22,17 @@ exports.getRemindersByNoteId = (noteId, response) => {
 
         response.status(200).json(reminders)
     })
+};
+
+exports.createReminder = (body, response) => {
+    const reminder = new Reminder(uuid.v1(), body.noteId, body.time);
+
+    db.run("INSERT INTO REMINDER (ID, NOTE_ID, TIME) VALUES (?, ?, ?)", [reminder.id, reminder.noteId, reminder.time],
+        function (error) {
+            if (error) {
+                throw error;
+            }
+
+            response.status(200).json(reminder);
+        })
 };

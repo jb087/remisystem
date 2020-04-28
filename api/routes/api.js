@@ -76,7 +76,7 @@ router.use(function (req, res, next) {
  *             $ref: '#/definitions/Note'
  */
 router.get('/notes', function (request, response, next) {
-    noteService.getNotes(response)
+    noteService.getNotes(response);
 });
 
 /**
@@ -101,7 +101,7 @@ router.get('/notes', function (request, response, next) {
  *           $ref: '#/definitions/Note'
  */
 router.post('/note', function (request, response, next) {
-    noteService.createNote(request.body, response)
+    noteService.createNote(request.body, response);
 });
 
 /**
@@ -126,7 +126,32 @@ router.post('/note', function (request, response, next) {
  *             $ref: '#/definitions/Reminder'
  */
 router.get('/reminders/:noteId', function (request, response, next) {
-    reminderService.getRemindersByNoteId(request.params.noteId, response)
+    reminderService.getRemindersByNoteId(request.params.noteId, response);
+});
+
+/**
+ * @swagger
+ * /api/reminder:
+ *   post:
+ *     description: It is used to create reminder
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: reminder
+ *         description: Reminder object
+ *         in: body
+ *         required: true
+ *         type: string
+ *         schema:
+ *           $ref: '#/definitions/NewReminder'
+ *     responses:
+ *       200:
+ *         description: Reminder successfully created
+ *         schema:
+ *           $ref: '#/definitions/Reminder'
+ */
+router.post('/reminder', function (request, response, next) {
+    reminderService.createReminder(request.body, response);
 });
 
 module.exports = router;
