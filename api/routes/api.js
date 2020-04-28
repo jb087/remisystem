@@ -106,6 +106,23 @@ router.post('/note', function (request, response, next) {
 
 /**
  * @swagger
+ * /api/reminders:
+ *   get:
+ *     description: It is used to get all reminders
+ *     responses:
+ *       200:
+ *         description: A successful response
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Reminder'
+ */
+router.get('/reminders', function (request, response, next) {
+    reminderService.getReminders(response);
+});
+
+/**
+ * @swagger
  * /api/reminders/{noteId}:
  *   get:
  *     description: It is used to get all reminders by noteId

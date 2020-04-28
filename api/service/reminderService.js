@@ -12,6 +12,18 @@ let db = new sqlite.Database(dbPath, (error) => {
     }
 });
 
+exports.getReminders = (response) => {
+    db.all("SELECT * FROM REMINDER", function (error, result) {
+        if (error) {
+            throw error;
+        }
+
+        const reminders = result.map(reminder => new Reminder(reminder.ID, reminder.NOTE_ID, reminder.TIME));
+
+        response.status(200).json(reminders)
+    })
+};
+
 exports.getRemindersByNoteId = (noteId, response) => {
     db.all("SELECT * FROM REMINDER WHERE NOTE_ID = ?", noteId, function (error, result) {
         if (error) {
