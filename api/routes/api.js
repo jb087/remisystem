@@ -54,4 +54,8 @@ router.get('/notes', function (request, response, next) {
     noteService.getNotes(response)
 });
 
+router.post('/note', function (request, response, next) {
+    noteService.createNote(request.body, response)
+});
+
 module.exports = router;
