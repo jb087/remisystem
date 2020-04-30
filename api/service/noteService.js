@@ -23,6 +23,17 @@ exports.getNotes = (response) => {
     })
 };
 
+exports.getNotesById = (id, response) => {
+    db.all("SELECT * FROM NOTE WHERE ID = ?", id, function (error, result) {
+        if (error) {
+            throw error;
+        }
+
+        const notes = result.map(note => new Note(note.ID, note.USER_ID, note.TITLE, note.DESCRIPTION));
+        response.status(200).json(notes);
+    })
+};
+
 exports.getNotesByUser = (user, response) => {
     db.all("SELECT * FROM NOTE WHERE USER_ID = ?", user.uid, function (error, result) {
         if (error) {
