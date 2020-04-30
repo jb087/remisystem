@@ -1,9 +1,9 @@
 const express = require('express');
-
-const router = express.Router();
-
+const authService = require('../service/authService');
 const noteService = require('../service/noteService');
 const reminderService = require('../service/reminderService');
+
+const router = express.Router();
 
 router.use(function (request, response, next) {
     response.header('Access-Control-Allow-Origin', '*');
@@ -76,8 +76,10 @@ router.use(function (request, response, next) {
  *           type: array
  *           items:
  *             $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
  */
-router.get('/notes', function (request, response, next) {
+router.get('/notes', authService, function (request, response, next) {
     noteService.getNotes(response);
 });
 
@@ -101,8 +103,10 @@ router.get('/notes', function (request, response, next) {
  *         description: Note successfully created
  *         schema:
  *           $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
  */
-router.post('/note', function (request, response, next) {
+router.post('/note', authService, function (request, response, next) {
     noteService.createNote(request.body, response);
 });
 
@@ -121,8 +125,10 @@ router.post('/note', function (request, response, next) {
  *     responses:
  *       200:
  *         description: Note and reminders successfully removed
+ *       401:
+ *         description: Problem with authorization
  */
-router.delete('/note/:id', function (request, response, next) {
+router.delete('/note/:id', authService, function (request, response, next) {
     noteService.deleteNoteWithReminders(request.params.id, response);
 });
 
@@ -163,8 +169,10 @@ router.get('/reminders', function (request, response, next) {
  *           type: array
  *           items:
  *             $ref: '#/definitions/Reminder'
+ *       401:
+ *         description: Problem with authorization
  */
-router.get('/reminders/:noteId', function (request, response, next) {
+router.get('/reminders/:noteId', authService, function (request, response, next) {
     reminderService.getRemindersByNoteId(request.params.noteId, response);
 });
 
@@ -188,8 +196,10 @@ router.get('/reminders/:noteId', function (request, response, next) {
  *         description: Reminder successfully created
  *         schema:
  *           $ref: '#/definitions/Reminder'
+ *       401:
+ *         description: Problem with authorization
  */
-router.post('/reminder', function (request, response, next) {
+router.post('/reminder', authService, function (request, response, next) {
     reminderService.createReminder(request.body, response);
 });
 
@@ -208,8 +218,10 @@ router.post('/reminder', function (request, response, next) {
  *     responses:
  *       200:
  *         description: Reminder successfully removed
+ *       401:
+ *         description: Problem with authorization
  */
-router.delete('/reminder/:id', function (request, response, next) {
+router.delete('/reminder/:id', authService, function (request, response, next) {
     reminderService.deleteReminder(request.params.id, response);
 });
 
