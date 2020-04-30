@@ -17,6 +17,14 @@ router.use(function (request, response, next) {
 
 /**
  * @swagger
+ * securityDefinitions:
+ *   Bearer:
+ *     type: apiKey
+ *     name: Authorization
+ *     in: header
+ * security:
+ *   - bearerAuth: []
+ *
  * definitions:
  *   NewNote:
  *     type: object
@@ -68,6 +76,8 @@ router.use(function (request, response, next) {
  * @swagger
  * /api/notes:
  *   get:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to get all notes
  *     responses:
  *       200:
@@ -87,6 +97,8 @@ router.get('/notes', authService, function (request, response, next) {
  * @swagger
  * /api/note:
  *   post:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to create note
  *     produces:
  *       - application/json
@@ -114,6 +126,8 @@ router.post('/note', authService, function (request, response, next) {
  * @swagger
  * /api/note/{id}:
  *   delete:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to remove note and reminders by noteId
  *     parameters:
  *       - in: path
@@ -153,6 +167,8 @@ router.get('/reminders', function (request, response, next) {
  * @swagger
  * /api/reminders/{noteId}:
  *   get:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to get all reminders by noteId
  *     parameters:
  *       - in: path
@@ -180,6 +196,8 @@ router.get('/reminders/:noteId', authService, function (request, response, next)
  * @swagger
  * /api/reminder:
  *   post:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to create reminder
  *     produces:
  *       - application/json
@@ -207,6 +225,8 @@ router.post('/reminder', authService, function (request, response, next) {
  * @swagger
  * /api/reminder/{id}:
  *   delete:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to remove reminder by id
  *     parameters:
  *       - in: path
