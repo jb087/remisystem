@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const schedule = require('node-schedule');
 const cronParser = require('cron-parser');
 const _ = require('underscore');
+const mailService = require('./mailService');
 
 const host = "http://localhost:9000/";
 const getRemindersPath = host + "api/reminders";
@@ -51,7 +52,8 @@ function scheduleDateJob(reminder) {
 }
 
 function scheduledTask(reminder) {
-    console.log("JobId: " + reminder.id)
+    console.log("JobId: " + reminder.id);
+    mailService.sendReminderOnMail(reminder);
 }
 
 exports.deleteReminder = (id) => {
