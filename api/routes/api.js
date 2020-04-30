@@ -98,6 +98,27 @@ router.get('/notes', authService, function (request, response, next) {
 
 /**
  * @swagger
+ * /api/notesByUser:
+ *   get:
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to get all notes by authorized user
+ *     responses:
+ *       200:
+ *         description: A successful response
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
+ */
+router.get('/notesByUser', authService, function (request, response, next) {
+    noteService.getNotesByUser(request.user, response);
+});
+
+/**
+ * @swagger
  * /api/note:
  *   post:
  *     security:
