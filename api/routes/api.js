@@ -108,6 +108,26 @@ router.post('/note', function (request, response, next) {
 
 /**
  * @swagger
+ * /api/note/{id}:
+ *   delete:
+ *     description: It is used to remove note and reminders by noteId
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Id of the note to remove
+ *     responses:
+ *       200:
+ *         description: Note and reminders successfully removed
+ */
+router.delete('/note/:id', function (request, response, next) {
+    noteService.deleteNoteWithReminders(request.params.id, response);
+});
+
+/**
+ * @swagger
  * /api/reminders:
  *   get:
  *     description: It is used to get all reminders
