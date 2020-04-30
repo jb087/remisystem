@@ -98,6 +98,35 @@ router.get('/notes', authService, function (request, response, next) {
 
 /**
  * @swagger
+ * /api/note/{id}:
+ *   get:
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to get note by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Id of the note to filter
+ *     responses:
+ *       200:
+ *         description: A successful response
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Reminder'
+ *       401:
+ *         description: Problem with authorization
+ */
+router.get('/note/:id', authService, function (request, response, next) {
+    noteService.getNotesById(request.params.id, response);
+});
+
+/**
+ * @swagger
  * /api/notesByUser:
  *   get:
  *     security:
@@ -107,9 +136,7 @@ router.get('/notes', authService, function (request, response, next) {
  *       200:
  *         description: A successful response
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Note'
+ *           $ref: '#/definitions/Note'
  *       401:
  *         description: Problem with authorization
  */
