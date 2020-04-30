@@ -45,8 +45,11 @@ router.use(function (request, response, next) {
  *           id:
  *             type: string
  *             format: uuid
+ *           userId:
+ *             type: string
  *         required:
  *           - id
+ *           - userId
  *
  *   NewReminder:
  *     type: object
@@ -95,11 +98,32 @@ router.get('/notes', authService, function (request, response, next) {
 
 /**
  * @swagger
+ * /api/notesByUser:
+ *   get:
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to get all notes by authorized user
+ *     responses:
+ *       200:
+ *         description: A successful response
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
+ */
+router.get('/notesByUser', authService, function (request, response, next) {
+    noteService.getNotesByUser(request.user, response);
+});
+
+/**
+ * @swagger
  * /api/note:
  *   post:
  *     security:
  *       - Bearer: []
- *     description: It is used to create note
+ *     description: It is used to create note for authorized user
  *     produces:
  *       - application/json
  *     parameters:
@@ -119,7 +143,7 @@ router.get('/notes', authService, function (request, response, next) {
  *         description: Problem with authorization
  */
 router.post('/note', authService, function (request, response, next) {
-    noteService.createNote(request.body, response);
+    noteService.createNote(request.body, request.user, response);
 });
 
 /**
