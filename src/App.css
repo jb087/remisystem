@@ -1,5 +1,10 @@
-.App {
-  text-align: center;
+body {
+  background: #fbfbfb;
+}
+
+.app {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .App-logo {
