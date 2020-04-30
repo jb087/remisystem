@@ -1,4 +1,5 @@
 const admin = require("firebase-admin");
+require('dotenv').config();
 
 module.exports = async (request, response, next) => {
     let idToken = request.headers.authorization;
@@ -9,6 +10,10 @@ module.exports = async (request, response, next) => {
 
     try {
         idToken = idToken.replace("Bearer ", "");
+
+        if (idToken === process.env.INTERNAL_BEARER) {
+            return next();
+        }
 
         request.user = await admin.auth().verifyIdToken(idToken);
         return next();

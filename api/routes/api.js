@@ -201,6 +201,8 @@ router.delete('/note/:id', authService, function (request, response, next) {
  * @swagger
  * /api/reminders:
  *   get:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to get all reminders
  *     responses:
  *       200:
@@ -209,8 +211,10 @@ router.delete('/note/:id', authService, function (request, response, next) {
  *           type: array
  *           items:
  *             $ref: '#/definitions/Reminder'
+ *       401:
+ *         description: Problem with authorization
  */
-router.get('/reminders', function (request, response, next) {
+router.get('/reminders', authService, function (request, response, next) {
     reminderService.getReminders(response);
 });
 

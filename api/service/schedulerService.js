@@ -3,9 +3,12 @@ const schedule = require('node-schedule');
 const cronParser = require('cron-parser');
 const _ = require('underscore');
 const mailService = require('./mailService');
+require('dotenv').config();
 
 const host = "http://localhost:9000/";
 const getRemindersPath = host + "api/reminders";
+const getNoteByIdPath = host + "api/note/{id}";
+const auth = "Bearer " + process.env.INTERNAL_BEARER;
 
 const everyTwoSecond = "*/2 * * * * *";
 
@@ -15,7 +18,10 @@ exports.startSchedulerService = () => {
     schedule.scheduleJob(everyTwoSecond, function () {
         fetch(getRemindersPath, {
             method: "GET",
-            headers: {"Content-Type": "application/json"}
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": auth
+            }
         })
             .then(response => response.json())
             .then(reminders => runReminders(reminders));
