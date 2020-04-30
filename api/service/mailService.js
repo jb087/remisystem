@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const admin = require("firebase-admin");
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
@@ -9,19 +10,28 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const mailOptions = {
-    from: process.env.MAIL_LOGIN,
-    to: 'jb087@op.pl',
-    subject: 'Sending Email using Node.js',
-    text: 'That was easy!'
+exports.sendReminderOnMail = (note) => {
+    admin.auth().getUser(note.userId)
+        .then(user => {
+            let mailOptions = getMailOptions(note, user.email);
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+        })
+        .catch(function(error) {
+            console.log('Error fetching user data: ', error);
+        });
 };
 
-exports.sendReminderOnMail = (reminder) => {
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
-};
+function getMailOptions(note, userMail) {
+    return {
+        from: process.env.MAIL_LOGIN,
+        to: userMail,
+        subject: note.title,
+        text: note.description
+    };
+}

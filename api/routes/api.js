@@ -115,9 +115,7 @@ router.get('/notes', authService, function (request, response, next) {
  *       200:
  *         description: A successful response
  *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Reminder'
+ *           $ref: '#/definitions/Note'
  *       401:
  *         description: Problem with authorization
  */

@@ -59,7 +59,19 @@ function scheduleDateJob(reminder) {
 
 function scheduledTask(reminder) {
     console.log("JobId: " + reminder.id);
-    mailService.sendReminderOnMail(reminder);
+    sendReminderOnMail(reminder);
+}
+
+function sendReminderOnMail(reminder) {
+    fetch(getNoteByIdPath.replace("{id}", reminder.noteId), {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": auth
+        }
+    })
+        .then(response => response.json())
+        .then(note => mailService.sendReminderOnMail(note));
 }
 
 exports.deleteReminder = (id) => {

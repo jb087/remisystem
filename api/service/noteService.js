@@ -30,7 +30,7 @@ exports.getNotesById = (id, response) => {
         }
 
         const notes = result.map(note => new Note(note.ID, note.USER_ID, note.TITLE, note.DESCRIPTION));
-        response.status(200).json(notes);
+        response.status(200).json(notes[0]);
     })
 };
 
