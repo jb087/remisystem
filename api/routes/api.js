@@ -1,14 +1,16 @@
 const express = require('express');
+
 const router = express.Router();
+
 const noteService = require('../service/noteService');
 const reminderService = require('../service/reminderService');
 
-router.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, DELETE, GET');
-        return res.status(200).json({});
+router.use(function (request, response, next) {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if (request.method === 'OPTIONS') {
+        response.header('Access-Control-Allow-Methods', 'PUT, POST, DELETE, GET');
+        return response.status(200).json({});
     }
     next();
 });
@@ -106,6 +108,26 @@ router.post('/note', function (request, response, next) {
 
 /**
  * @swagger
+ * /api/note/{id}:
+ *   delete:
+ *     description: It is used to remove note and reminders by noteId
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Id of the note to remove
+ *     responses:
+ *       200:
+ *         description: Note and reminders successfully removed
+ */
+router.delete('/note/:id', function (request, response, next) {
+    noteService.deleteNoteWithReminders(request.params.id, response);
+});
+
+/**
+ * @swagger
  * /api/reminders:
  *   get:
  *     description: It is used to get all reminders
@@ -169,6 +191,26 @@ router.get('/reminders/:noteId', function (request, response, next) {
  */
 router.post('/reminder', function (request, response, next) {
     reminderService.createReminder(request.body, response);
+});
+
+/**
+ * @swagger
+ * /api/reminder/{id}:
+ *   delete:
+ *     description: It is used to remove reminder by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Id of the reminder to remove
+ *     responses:
+ *       200:
+ *         description: Reminder successfully removed
+ */
+router.delete('/reminder/:id', function (request, response, next) {
+    reminderService.deleteReminder(request.params.id, response);
 });
 
 module.exports = router;

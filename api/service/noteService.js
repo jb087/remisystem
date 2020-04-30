@@ -1,8 +1,8 @@
 const uuid = require('uuid');
-
 const Note = require('../entity/Note');
-
+const schedulerService = require('../service/schedulerService');
 const sqlite = require('sqlite3').verbose();
+
 const dbPath = 'db/remisystem.sqlite';
 let db = new sqlite.Database(dbPath, (error) => {
     if (error) {
@@ -33,5 +33,37 @@ exports.createNote = (body, response) => {
             }
 
             response.status(200).json(note);
+        })
+};
+
+exports.deleteNoteWithReminders = (noteId, response) => {
+    db.all("SELECT * FROM REMINDER WHERE NOTE_ID = ?", noteId, function (error, result) {
+        if (error) {
+            throw error;
+        }
+
+        result.forEach(reminder => schedulerService.deleteReminder(reminder.ID));
+
+        deleteReminders(noteId, response);
     })
 };
+
+function deleteReminders(noteId, response) {
+    db.run("DELETE FROM REMINDER WHERE NOTE_ID = ?", noteId, function (error) {
+        if (error) {
+            throw error;
+        }
+
+        deleteNote(noteId, response);
+    })
+}
+
+function deleteNote(noteId, response) {
+    db.run("DELETE FROM NOTE WHERE ID = ?", noteId, function (error) {
+        if (error) {
+            throw error;
+        }
+
+        response.sendStatus(200);
+    })
+}

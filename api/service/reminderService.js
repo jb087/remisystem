@@ -1,8 +1,8 @@
 const uuid = require('uuid');
-
 const Reminder = require('../entity/Reminder');
-
+const schedulerService = require('../service/schedulerService');
 const sqlite = require('sqlite3').verbose();
+
 const dbPath = 'db/remisystem.sqlite';
 let db = new sqlite.Database(dbPath, (error) => {
     if (error) {
@@ -47,4 +47,16 @@ exports.createReminder = (body, response) => {
 
             response.status(200).json(reminder);
         })
+};
+
+exports.deleteReminder = (id, response) => {
+    db.run("DELETE FROM REMINDER WHERE ID = ?", id, function(error) {
+        if (error) {
+            throw error;
+        }
+
+        schedulerService.deleteReminder(id);
+
+        response.sendStatus(200)
+    })
 };
