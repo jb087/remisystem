@@ -18,15 +18,15 @@ exports.getNotes = (response) => {
             throw error;
         }
 
-        const notes = result.map(note => new Note(note.ID, note.TITLE, note.DESCRIPTION));
+        const notes = result.map(note => new Note(note.ID, note.USER_ID, note.TITLE, note.DESCRIPTION));
         response.status(200).json(notes);
     })
 };
 
-exports.createNote = (body, response) => {
-    const note = new Note(uuid.v1(), body.title, body.description);
+exports.createNote = (body, user, response) => {
+    const note = new Note(uuid.v1(), user.uid, body.title, body.description);
 
-    db.run("INSERT INTO NOTE (ID, TITLE, DESCRIPTION) VALUES (?, ?, ?)", [note.id, note.title, note.description],
+    db.run("INSERT INTO NOTE (ID, USER_ID, TITLE, DESCRIPTION) VALUES (?, ?, ?, ?)", [note.id, note.userId, note.title, note.description],
         function (error, result) {
             if (error) {
                 throw error;
