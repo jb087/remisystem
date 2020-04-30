@@ -173,4 +173,24 @@ router.post('/reminder', function (request, response, next) {
     reminderService.createReminder(request.body, response);
 });
 
+/**
+ * @swagger
+ * /api/reminder/{id}:
+ *   delete:
+ *     description: It is used to remove reminder by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Id of the reminder to remove
+ *     responses:
+ *       200:
+ *         description: Reminder successfully removed
+ */
+router.delete('/reminder/:id', function (request, response, next) {
+    reminderService.deleteReminder(request.params.id, response);
+});
+
 module.exports = router;
