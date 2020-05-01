@@ -174,6 +174,37 @@ router.post('/note', authService, function (request, response, next) {
 /**
  * @swagger
  * /api/note/{id}:
+ *   put:
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to update note by noteId
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Id of the note to update
+ *       - name: note
+ *         description: Note object
+ *         in: body
+ *         required: true
+ *         type: string
+ *         schema:
+ *           $ref: '#/definitions/NewNote'
+ *     responses:
+ *       200:
+ *         description: Note successfully updated
+ *       401:
+ *         description: Problem with authorization
+ */
+router.put('/note/:id', authService, function (request, response, next) {
+    noteService.updateNote(request, request.user, response);
+});
+
+/**
+ * @swagger
+ * /api/note/{id}:
  *   delete:
  *     security:
  *       - Bearer: []
