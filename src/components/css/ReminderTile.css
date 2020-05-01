@@ -1,0 +1,28 @@
+.reminder-tile {
+  margin: 10px;
+}
+
+.reminder-tile {
+  width: 200px;
+  height: 200px;
+  background: white;
+  box-shadow: 0px 0px 7px #999;
+  transition: box-shadow 0.1s ease-in-out;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+  background-color: #f8f9fa;
+  text-decoration: none;
+  color: #333;
+}
+
+.reminder-tile:hover {
+  box-shadow: 0px 0px 7px #007bff;
+}
