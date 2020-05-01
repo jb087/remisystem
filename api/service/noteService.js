@@ -58,6 +58,19 @@ exports.createNote = (body, user, response) => {
         })
 };
 
+exports.updateNote = (request, user, response) => {
+    const note = new Note(request.params.id, user.uid, request.body.title, request.body.description);
+
+    db.run("UPDATE NOTE SET TITLE = ?, DESCRIPTION = ? WHERE ID = ? AND USER_ID = ?",
+        [note.title, note.description, note.id, note.userId], function (error) {
+            if (error) {
+                throw error;
+            }
+
+            response.sendStatus(200);
+        })
+};
+
 exports.deleteNoteWithReminders = (noteId, response) => {
     db.all("SELECT * FROM REMINDER WHERE NOTE_ID = ?", noteId, function (error, result) {
         if (error) {
