@@ -3,8 +3,10 @@ import React, { useContext, useState } from 'react';
 import { UserContext } from '../providers/UserProvider';
 
 export default function SettingsPanel() {
-  const { user, userAuth } = useContext(UserContext);
-  const [email, setEmail] = useState(user.email);
+  const {
+    user: { userAuth },
+  } = useContext(UserContext);
+  const [email, setEmail] = useState(userAuth.email);
 
   const onChangeHandler = (event) => {
     const { name, value } = event.currentTarget;

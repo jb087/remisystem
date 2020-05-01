@@ -1,51 +1,32 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState, useCallback } from 'react';
 import { auth, getUserDocument } from '../firebase';
-
-import useSignIn from '../hooks/useSignIn';
 
 export const UserContext = createContext({});
 
 export default function UserProvider({ children }) {
-  const [user, isDuginSignUp, setUser, setIsDuringSignUp] = useSignIn();
+  const [user, setUser] = useState({ userAuth: null });
   const [isAfterFirstCheck, setIsAfterFirstCheck] = useState(false);
-  const [isAfterSecondCheck, setIsAfterSecondCheck] = useState(false);
-  const [userAuth, setUserAuth] = useState(null);
+  const forceUserAuthUpdate = useCallback(() => {
+    console.log(auth, auth.currentUser);
+    setUser({ userAuth: auth.currentUser });
+  }, [setUser]);
 
   useEffect(() => {
     auth.onAuthStateChanged((userAuth) => {
-      console.log(userAuth, userAuth ? userAuth.uid : 'n');
-      setUserAuth(userAuth);
+      console.log(userAuth);
+      setUser({ userAuth });
       setIsAfterFirstCheck(true);
     });
-  }, [setUserAuth]);
-
-  useEffect(() => {
-    if (userAuth && !isDuginSignUp) {
-      getUserDocument(userAuth.uid).then((user) => {
-        console.log(userAuth.uid, user);
-        setUser(user);
-        setIsAfterSecondCheck(true);
-      });
-    } else {
-      setUser(null);
-      if (isAfterFirstCheck) {
-        setIsAfterSecondCheck(true);
-      }
-    }
-  }, [
-    isDuginSignUp,
-    userAuth,
-    setUser,
-    isAfterFirstCheck,
-    setIsAfterFirstCheck,
-    setIsAfterSecondCheck,
-  ]);
+  }, [setUser, setIsAfterFirstCheck]);
 
   return (
     <UserContext.Provider
-      value={{ user, userAuth, isDuginSignUp, setIsDuringSignUp }}
+      value={{
+        user: user.userAuth ? user : null,
+        forceUserAuthUpdate,
+      }}
     >
-      {isAfterSecondCheck ? (
+      {isAfterFirstCheck ? (
         children
       ) : (
         <div

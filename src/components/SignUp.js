@@ -6,34 +6,30 @@ import { auth, generateUserDocument } from '../firebase';
 import { UserContext } from '../providers/UserProvider';
 
 export default function SignUp() {
-  const { setIsDuringSignUp } = useContext(UserContext);
+  const { forceUserAuthUpdate } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [login, setLogin] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState(null);
 
   const createUserWithEmailAndPasswordHandler = async (
     event,
-    login,
+    displayName,
     email,
     password
   ) => {
-    setIsDuringSignUp(true);
     event.preventDefault();
     try {
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      await generateUserDocument(user, { login, sendEmailReminders: false });
-      // .then(() =>
-      // generateUserDocument(user, { login, sendEmailReminders: false })
-      // );
-
-      // setEmail('');
-      // setPassword('');
-      // setLogin('');
-      setIsDuringSignUp(false);
+      auth.createUserWithEmailAndPassword(email, password).then((userCred) => {
+        userCred.user
+          .updateProfile({
+            displayName,
+          })
+          .then(() => {
+            forceUserAuthUpdate();
+          });
+      });
+      // await generateUserDocument(user, { sendEmailReminders: false });
     } catch (error) {
       setError(error.message);
     }
@@ -46,15 +42,10 @@ export default function SignUp() {
       setEmail(value);
     } else if (name === 'password') {
       setPassword(value);
-    } else if (name === 'login') {
-      setLogin(value);
+    } else if (name === 'displayName') {
+      setDisplayName(value);
     }
   };
-
-  useEffect(() => {
-    // setIsDuringSignUp(true);
-    // return () => setIsDuringSignUp(false);
-  }, [setIsDuringSignUp]);
 
   return (
     <PanelUnlogged>
@@ -71,10 +62,10 @@ export default function SignUp() {
             <input
               type="text"
               className="form-control"
-              name="login"
-              id="login"
-              placeholder="Your login"
-              value={login}
+              name="displayName"
+              id="displayName"
+              placeholder="Your displayName"
+              value={displayName}
               onChange={onChangeHandler}
             />
           </div>
@@ -109,7 +100,7 @@ export default function SignUp() {
             onClick={(event) => {
               createUserWithEmailAndPasswordHandler(
                 event,
-                login,
+                displayName,
                 email,
                 password
               );
