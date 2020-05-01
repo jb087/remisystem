@@ -218,7 +218,7 @@ router.get('/reminders', authService, function (request, response, next) {
 
 /**
  * @swagger
- * /api/reminders/{noteId}:
+ * /api/note/{noteId}/reminders:
  *   get:
  *     security:
  *       - Bearer: []
@@ -241,7 +241,7 @@ router.get('/reminders', authService, function (request, response, next) {
  *       401:
  *         description: Problem with authorization
  */
-router.get('/reminders/:noteId', authService, function (request, response, next) {
+router.get('/note/:noteId/reminders', authService, function (request, response, next) {
     reminderService.getRemindersByNoteId(request.params.noteId, response);
 });
 

@@ -11,11 +11,10 @@ module.exports = async (request, response, next) => {
     try {
         idToken = idToken.replace("Bearer ", "");
 
-        if (idToken === process.env.INTERNAL_BEARER) {
-            return next();
+        if (idToken !== process.env.INTERNAL_BEARER) {
+            request.user = await admin.auth().verifyIdToken(idToken);
         }
 
-        request.user = await admin.auth().verifyIdToken(idToken);
         return next();
     } catch (e) {
         return response.status(401).send("Authorization failed");
