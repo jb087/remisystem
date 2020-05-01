@@ -1,25 +1,36 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import React, { useContext } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import HomePanel from './components/HomePanel';
-import Login from './components/Login';
+import SignIn from './components/SignIn';
 import SettingsPanel from './components/SettingsPanel';
 import NewReminder from './components/NewReminder';
 import ReminderPanel from './components/ReminderPanel';
+import SignUp from './components/SignUp';
+import PasswordReset from './components/PasswordReset';
 
-export const userContext = React.createContext(null);
+import UserProvider, { UserContext } from './providers/UserProvider';
+import Panel from './components/Panel';
 
 function App() {
-  const [userData, setUserData] = useState(null);
-  const login = (data) => setUserData(data);
-
   return (
     <Router>
-      <userContext.Provider value={{ login, userData }}>
+      <UserProvider>
         <main className="app">
           <Switch>
-            <Route path="/login">
-              <Login />
+            <Route path="/signIn">
+              <SignIn />
+            </Route>
+            <Route path="/signUp">
+              <SignUp />
+            </Route>
+            <Route path="/passwordReset">
+              <PasswordReset />
             </Route>
             <Route path="/" exact>
               <HomePanel />
@@ -31,12 +42,14 @@ function App() {
               <NewReminder />
             </Route>
             <Route path="/settings">
-              <SettingsPanel />
+              <Panel>
+                <SettingsPanel />
+              </Panel>
             </Route>
             <Route render={() => <Redirect to="/" />} />
           </Switch>
         </main>
-      </userContext.Provider>
+      </UserProvider>
     </Router>
   );
 }

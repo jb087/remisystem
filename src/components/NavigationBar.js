@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import logo from './../logo-small.png';
 import './css/NavigationBar.css';
 
-import { userContext } from '../App';
+import { UserContext } from '../providers/UserProvider';
+import { auth } from '../firebase';
 
 export default function NavigationBar() {
-  const user = useContext(userContext);
+  const { user } = useContext(UserContext);
 
   return (
     <nav className="navbar navbar-light bg-light">
@@ -16,7 +17,7 @@ export default function NavigationBar() {
           alt="logo"
           className="d-inline-block align-top logo mr-4"
         />
-        {user.userData.email}
+        {user.login}
       </Link>
       <form className="form-inline">
         <Link
@@ -28,8 +29,16 @@ export default function NavigationBar() {
         </Link>
         <button
           className="btn btn-outline-danger my-2 my-sm-0"
-          type="submit"
-          onClick={() => user.login(null)}
+          type="button"
+          onClick={() => {
+            auth.signOut();
+            // .then(function () {
+            //   setUser(null)
+            // })
+            // .catch(function (error) {
+            //   // An error happened
+            // })
+          }}
         >
           Logout
         </button>

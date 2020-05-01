@@ -3,13 +3,13 @@ import { Redirect } from 'react-router-dom';
 
 import NavigationBar from './NavigationBar';
 
-import { userContext } from '../App';
+import { UserContext } from '../providers/UserProvider';
 
 export default function Panel({ children }) {
-  const { userData } = useContext(userContext);
+  const { user } = useContext(UserContext);
 
-  if (!userData) {
-    return <Redirect to="/login" />;
+  if (!user) {
+    return <Redirect to="/signIn" />;
   }
 
   return (
