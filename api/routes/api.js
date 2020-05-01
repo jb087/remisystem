@@ -1,9 +1,9 @@
 const express = require('express');
-
-const router = express.Router();
-
+const authService = require('../service/authService');
 const noteService = require('../service/noteService');
 const reminderService = require('../service/reminderService');
+
+const router = express.Router();
 
 router.use(function (request, response, next) {
     response.header('Access-Control-Allow-Origin', '*');
@@ -17,6 +17,14 @@ router.use(function (request, response, next) {
 
 /**
  * @swagger
+ * securityDefinitions:
+ *   Bearer:
+ *     type: apiKey
+ *     name: Authorization
+ *     in: header
+ * security:
+ *   - bearerAuth: []
+ *
  * definitions:
  *   NewNote:
  *     type: object
@@ -37,8 +45,11 @@ router.use(function (request, response, next) {
  *           id:
  *             type: string
  *             format: uuid
+ *           userId:
+ *             type: string
  *         required:
  *           - id
+ *           - userId
  *
  *   NewReminder:
  *     type: object
@@ -68,6 +79,8 @@ router.use(function (request, response, next) {
  * @swagger
  * /api/notes:
  *   get:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to get all notes
  *     responses:
  *       200:
@@ -76,16 +89,66 @@ router.use(function (request, response, next) {
  *           type: array
  *           items:
  *             $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
  */
-router.get('/notes', function (request, response, next) {
+router.get('/notes', authService, function (request, response, next) {
     noteService.getNotes(response);
+});
+
+/**
+ * @swagger
+ * /api/note/{id}:
+ *   get:
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to get note by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Id of the note to filter
+ *     responses:
+ *       200:
+ *         description: A successful response
+ *         schema:
+ *           $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
+ */
+router.get('/note/:id', authService, function (request, response, next) {
+    noteService.getNotesById(request.params.id, response);
+});
+
+/**
+ * @swagger
+ * /api/notesByUser:
+ *   get:
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to get all notes by authorized user
+ *     responses:
+ *       200:
+ *         description: A successful response
+ *         schema:
+ *           $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
+ */
+router.get('/notesByUser', authService, function (request, response, next) {
+    noteService.getNotesByUser(request.user, response);
 });
 
 /**
  * @swagger
  * /api/note:
  *   post:
- *     description: It is used to create note
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to create note for authorized user
  *     produces:
  *       - application/json
  *     parameters:
@@ -101,15 +164,19 @@ router.get('/notes', function (request, response, next) {
  *         description: Note successfully created
  *         schema:
  *           $ref: '#/definitions/Note'
+ *       401:
+ *         description: Problem with authorization
  */
-router.post('/note', function (request, response, next) {
-    noteService.createNote(request.body, response);
+router.post('/note', authService, function (request, response, next) {
+    noteService.createNote(request.body, request.user, response);
 });
 
 /**
  * @swagger
  * /api/note/{id}:
  *   delete:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to remove note and reminders by noteId
  *     parameters:
  *       - in: path
@@ -121,8 +188,10 @@ router.post('/note', function (request, response, next) {
  *     responses:
  *       200:
  *         description: Note and reminders successfully removed
+ *       401:
+ *         description: Problem with authorization
  */
-router.delete('/note/:id', function (request, response, next) {
+router.delete('/note/:id', authService, function (request, response, next) {
     noteService.deleteNoteWithReminders(request.params.id, response);
 });
 
@@ -130,6 +199,8 @@ router.delete('/note/:id', function (request, response, next) {
  * @swagger
  * /api/reminders:
  *   get:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to get all reminders
  *     responses:
  *       200:
@@ -138,15 +209,19 @@ router.delete('/note/:id', function (request, response, next) {
  *           type: array
  *           items:
  *             $ref: '#/definitions/Reminder'
+ *       401:
+ *         description: Problem with authorization
  */
-router.get('/reminders', function (request, response, next) {
+router.get('/reminders', authService, function (request, response, next) {
     reminderService.getReminders(response);
 });
 
 /**
  * @swagger
- * /api/reminders/{noteId}:
+ * /api/note/{noteId}/reminders:
  *   get:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to get all reminders by noteId
  *     parameters:
  *       - in: path
@@ -163,8 +238,10 @@ router.get('/reminders', function (request, response, next) {
  *           type: array
  *           items:
  *             $ref: '#/definitions/Reminder'
+ *       401:
+ *         description: Problem with authorization
  */
-router.get('/reminders/:noteId', function (request, response, next) {
+router.get('/note/:noteId/reminders', authService, function (request, response, next) {
     reminderService.getRemindersByNoteId(request.params.noteId, response);
 });
 
@@ -172,6 +249,8 @@ router.get('/reminders/:noteId', function (request, response, next) {
  * @swagger
  * /api/reminder:
  *   post:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to create reminder
  *     produces:
  *       - application/json
@@ -188,8 +267,10 @@ router.get('/reminders/:noteId', function (request, response, next) {
  *         description: Reminder successfully created
  *         schema:
  *           $ref: '#/definitions/Reminder'
+ *       401:
+ *         description: Problem with authorization
  */
-router.post('/reminder', function (request, response, next) {
+router.post('/reminder', authService, function (request, response, next) {
     reminderService.createReminder(request.body, response);
 });
 
@@ -197,6 +278,8 @@ router.post('/reminder', function (request, response, next) {
  * @swagger
  * /api/reminder/{id}:
  *   delete:
+ *     security:
+ *       - Bearer: []
  *     description: It is used to remove reminder by id
  *     parameters:
  *       - in: path
@@ -208,8 +291,10 @@ router.post('/reminder', function (request, response, next) {
  *     responses:
  *       200:
  *         description: Reminder successfully removed
+ *       401:
+ *         description: Problem with authorization
  */
-router.delete('/reminder/:id', function (request, response, next) {
+router.delete('/reminder/:id', authService, function (request, response, next) {
     reminderService.deleteReminder(request.params.id, response);
 });
 

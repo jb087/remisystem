@@ -3,6 +3,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const admin = require("firebase-admin");
+const serviceAccount = require("./bin/firebase");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://remisystem-75ab6.firebaseio.com"
+});
+
 const api = require('./routes/api');
 const app = express();
 const swaggerJsDoc = require('swagger-jsdoc');
