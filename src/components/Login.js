@@ -5,10 +5,9 @@ import logo from './../logo.png';
 import { userContext } from '../App';
 
 export default function Login() {
-  const user = useContext(userContext);
+  const { userData, login } = useContext(userContext);
 
-  console.log(user, user.userData);
-  if (user.userData) {
+  if (userData) {
     return <Redirect to="/" />;
   }
 
@@ -46,7 +45,7 @@ export default function Login() {
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  onClick={() => user.login({ email: 'asf@as.com' })}
+                  onClick={() => login({ email: 'asf@as.com' })}
                 >
                   Submit
                 </button>
