@@ -1,29 +1,30 @@
 import React, { useContext, useState } from 'react';
 
 import { UserContext } from '../providers/UserProvider';
+import useForm from '../hooks/useForm';
 
 export default function SettingsPanel() {
   const {
     user: { userAuth },
   } = useContext(UserContext);
-  const [email, setEmail] = useState(userAuth.email);
-
-  const onChangeHandler = (event) => {
-    const { name, value } = event.currentTarget;
-
-    if (name === 'email') {
-      setEmail(value);
-    }
-  };
+  const [
+    emailFields,
+    isDuringEmailProcessing,
+    onEmailChange,
+    setIsDuringEmailProcessing,
+  ] = useForm({ email: userAuth.email });
 
   const updateEmail = async (event, email) => {
+    setIsDuringEmailProcessing(true);
     event.preventDefault();
     try {
-      userAuth.updateEmail(email).then(function a() {
+      await userAuth.updateEmail(email).then(function a() {
         console.log(arguments);
       });
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsDuringEmailProcessing(false);
     }
   };
 
@@ -44,6 +45,7 @@ export default function SettingsPanel() {
                   Remind me by mail
                 </label>
               </div>
+              {/* TODO: Add spinner, disable fields during fetching */}
               <button type="submit" className="btn btn-primary">
                 Save
               </button>
@@ -62,16 +64,29 @@ export default function SettingsPanel() {
                   id="email"
                   name="email"
                   placeholder="Email"
-                  value={email}
-                  onChange={onChangeHandler}
+                  value={emailFields.email}
+                  onChange={onEmailChange}
+                  disabled={isDuringEmailProcessing}
                 />
               </div>
               <button
                 type="submit"
                 className="btn btn-primary"
-                onClick={(event) => updateEmail(event, email)}
+                onClick={(event) => updateEmail(event, emailFields.email)}
+                disabled={isDuringEmailProcessing}
               >
-                Save
+                {isDuringEmailProcessing ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    {' Saving...'}
+                  </>
+                ) : (
+                  'Save'
+                )}
               </button>
             </form>
           </div>
