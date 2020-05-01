@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
 import HomePanel from './components/HomePanel';
 import Login from './components/Login';
-import AccountSettings from './components/AccountSettings';
+import SettingsPanel from './components/SettingsPanel';
 import NewReminder from './components/NewReminder';
+import ReminderPanel from './components/ReminderPanel';
 
-import './App.css';
-
-export const userContext = React.createContext({ color: 'black' });
+export const userContext = React.createContext(null);
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -25,12 +24,16 @@ function App() {
             <Route path="/" exact>
               <HomePanel />
             </Route>
+            <Route path="/reminder/:reminderId">
+              <ReminderPanel />
+            </Route>
             <Route path="/newreminder">
               <NewReminder />
             </Route>
             <Route path="/settings">
-              <AccountSettings />
+              <SettingsPanel />
             </Route>
+            <Route render={() => <Redirect to="/" />} />
           </Switch>
         </main>
       </userContext.Provider>

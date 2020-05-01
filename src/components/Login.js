@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
+import { Redirect } from 'react-router-dom';
+import logo from './../logo.png';
 
 import { userContext } from '../App';
-
-import logo from './../logo.png';
-import { Redirect } from 'react-router-dom';
 
 export default function Login() {
   const user = useContext(userContext);
@@ -25,21 +24,21 @@ export default function Login() {
             <div className="card-body">
               <form>
                 <div className="form-group">
-                  <label for="exampleInputEmail1">Email address</label>
+                  <label htmlFor="email">Email address</label>
                   <input
                     type="email"
-                    class="form-control"
-                    id="exampleInputEmail1"
+                    className="form-control"
+                    id="email"
                     aria-describedby="emailHelp"
                     placeholder="Enter email"
                   />
                 </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Password</label>
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
                   <input
                     type="password"
                     className="form-control"
-                    id="exampleInputPassword1"
+                    id="password"
                     placeholder="Password"
                   />
                 </div>
