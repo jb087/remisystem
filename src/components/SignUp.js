@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { auth, generateUserDocument } from '../firebase';
+import { auth } from '../firebase';
 import { UserContext } from '../providers/UserProvider';
 import useForm from '../hooks/useForm';
 import ButtonWithSpinner from './ButtonWithSpinner';
@@ -43,7 +43,6 @@ export default function SignUp() {
         displayName,
       });
       forceUserAuthUpdate();
-      // await generateUserDocument(user, { sendEmailReminders: false });
     } catch (error) {
       if (componentIsMounted.current) {
         setError(error.message);

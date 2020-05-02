@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState, useCallback } from 'react';
-import { auth, getUserDocument } from '../firebase';
+import { auth } from '../firebase';
 
 export const UserContext = createContext({});
 
@@ -13,7 +13,6 @@ export default function UserProvider({ children }) {
 
   useEffect(() => {
     auth.onAuthStateChanged((userAuth) => {
-      console.log(userAuth);
       setUser({ userAuth });
       setIsAfterFirstCheck(true);
     });

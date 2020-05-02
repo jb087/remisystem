@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import ButtonWithSpinner from './ButtonWithSpinner';
 
 import { UserContext } from '../providers/UserProvider';
 import useForm from '../hooks/useForm';
+import { getOrCreateSettings, setUserSettings } from '../firebase';
 
 export default function SettingsReminder() {
   const {
@@ -15,11 +16,28 @@ export default function SettingsReminder() {
     ,
     setIsDuringProcessing,
     onChangeCustom,
-  ] = useForm({ sendEmail: false });
+  ] = useForm({ sendEmailReminders: false });
+  const [settings, setSettings] = useState(null);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+  const uid = userAuth.uid;
+  const isFetchingData = !settings;
 
-  const updateReminder = async (event, sendEmail) => {
+  useEffect(() => {
+    async function fetchSettings() {
+      const userSettings = await getOrCreateSettings(uid);
+      setSettings(userSettings);
+    }
+    fetchSettings();
+  }, [uid, setSettings]);
+
+  useEffect(() => {
+    if (settings) {
+      onChangeCustom('sendEmailReminders', settings.sendEmailReminders);
+    }
+  }, [settings, onChangeCustom]);
+
+  const updateReminder = async (event, sendEmailReminders) => {
     event.preventDefault();
     setIsDuringProcessing(true);
 
@@ -27,12 +45,10 @@ export default function SettingsReminder() {
     setError(null);
 
     try {
-      // await userAuth.updateEmail(email);
-      console.log(sendEmail);
+      await setUserSettings(uid, { sendEmailReminders });
       setSuccess('Settings have been changed.');
     } catch (error) {
       setError(error.message);
-      console.error(error);
     } finally {
       setIsDuringProcessing(false);
     }
@@ -52,33 +68,45 @@ export default function SettingsReminder() {
             {error}
           </div>
         )}
-        <form>
-          <div className="form-group custom-control custom-switch">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="sendEmail"
-              name="sendEmail"
-              checked={fields.sendEmail}
-              onChange={(event) => {
-                const { name, checked } = event.target;
-                onChangeCustom(name, checked);
-              }}
-              disabled={isDuringProcessing}
-            />
-            <label className="custom-control-label" htmlFor="sendEmail">
-              Remind me by mail
-            </label>
+        {isFetchingData && (
+          <div className="spinner-grow" role="status">
+            <span className="sr-only">Loading...</span>
           </div>
-          <ButtonWithSpinner
-            type="submit"
-            className="btn btn-primary"
-            onClick={(event) => updateReminder(event, fields.sendEmail)}
-            isDuringProcessing={isDuringProcessing}
-            label="Save"
-            labelProcessing="Saving..."
-          />
-        </form>
+        )}
+        {!isFetchingData && (
+          <form>
+            <div className="form-group custom-control custom-switch">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="sendEmailReminders"
+                name="sendEmailReminders"
+                checked={fields.sendEmailReminders}
+                onChange={(event) => {
+                  const { name, checked } = event.target;
+                  onChangeCustom(name, checked);
+                }}
+                disabled={isDuringProcessing}
+              />
+              <label
+                className="custom-control-label"
+                htmlFor="sendEmailReminders"
+              >
+                Remind me by mail
+              </label>
+            </div>
+            <ButtonWithSpinner
+              type="submit"
+              className="btn btn-primary"
+              onClick={(event) =>
+                updateReminder(event, fields.sendEmailReminders)
+              }
+              isDuringProcessing={isDuringProcessing}
+              label="Save"
+              labelProcessing="Saving..."
+            />
+          </form>
+        )}
       </div>
     </div>
   );

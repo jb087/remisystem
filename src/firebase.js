@@ -16,44 +16,44 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-export const generateUserDocument = async (user, additionalData) => {
-  if (!user) {
-    return;
+const getUserSettingsRef = (uid) => {
+  if (!uid) {
+    throw Error({ message: 'uid is not defined' });
   }
 
-  const userRef = firestore.doc(`users/${user.uid}`);
-  const snapshot = await userRef.get();
-
-  if (!snapshot.exists) {
-    const { email, login=null, sendEmailReminders=null } = user;
-    try {
-      await userRef.set({
-        email,
-        login,
-        sendEmailReminders,
-        ...additionalData,
-      });
-    } catch (error) {
-      console.error('Error creating user document', error);
-    }
-  }
-
-  return getUserDocument(user.uid);
+  return firestore.collection('userSettings').doc(uid);
 };
 
-export const getUserDocument = async (uid) => {
-  if (!uid) {
-    return null;
+export const getOrCreateSettings = async (uid) => {
+  const userSettingsRef = getUserSettingsRef(uid);
+  const snapshot = await userSettingsRef.get();
+
+  if (!snapshot.exists) {
+    setUserSettings(uid, { sendEmailReminders: false });
   }
 
+  return getUserSettings(uid);
+};
+
+export const setUserSettings = async (uid, { sendEmailReminders }) => {
+  const userSettingsRef = getUserSettingsRef(uid);
+
   try {
-    const userDocument = await firestore.doc(`users/${uid}`).get();
+    await userSettingsRef.set({ sendEmailReminders });
+  } catch (error) {
+    throw Error({ message: 'Error while settin user settings', error });
+  }
+};
+
+export const getUserSettings = async (uid) => {
+  try {
+    const userSettingsRef = getUserSettingsRef(uid);
+    const userSettingsDocument = await userSettingsRef.get();
 
     return {
-      uid,
-      ...userDocument.data(),
+      ...userSettingsDocument.data(),
     };
   } catch (error) {
-    console.error('Error fetching user', error);
+    throw Error({ message: 'Error while getting user settings', error });
   }
 };
