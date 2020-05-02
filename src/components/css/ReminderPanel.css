@@ -1,0 +1,9 @@
+.reminder-panel__btns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.reminder-panel__btn {
+  padding-left: 40px;
+  padding-right: 40px;
+}
