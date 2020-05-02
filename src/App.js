@@ -9,8 +9,8 @@ import {
 import Home from './components/Home';
 import SignIn from './components/SignIn';
 import Settings from './components/Settings';
-import NewReminder from './components/NewReminder';
-import Reminder from './components/Reminder';
+import NewNote from './components/NewNote';
+import Note from './components/Note';
 import SignUp from './components/SignUp';
 import PasswordReset from './components/PasswordReset';
 import Panel from './components/Panel';
@@ -46,12 +46,12 @@ function App() {
             </Route>
             <Route path="/reminder/:reminderId">
               <Panel>
-                <Reminder />
+                <Note />
               </Panel>
             </Route>
             <Route path="/newreminder">
               <Panel>
-                <NewReminder />
+                <NewNote />
               </Panel>
             </Route>
             <Route path="/settings">

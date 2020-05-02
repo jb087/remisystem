@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import './css/ReminderPanel.css';
+import './css/Note.css';
 
-export default function Reminder() {
+export default function Note() {
   let { reminderId } = useParams();
   const { title, description } = {
     title: 'asdfasdf',

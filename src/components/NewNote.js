@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default function NewReminder() {
+export default function NewNote() {
   return <div>NewReminder</div>;
 }

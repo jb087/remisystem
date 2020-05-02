@@ -1,17 +1,17 @@
 import React from 'react';
 import './css/Tiles.css';
 
-import ReminderTile from './ReminderTile';
+import NoteTile from './NoteTile';
 
 export default function Tiles({ tiles }) {
-  const newTileTile = <ReminderTile key="-1" title="+" />;
+  const newTileTile = <NoteTile key="-1" title="+" />;
 
   // TODO: https://medium.com/cloudaper/how-to-create-a-flexible-square-grid-with-css-grid-layout-ea48baf038f3
   return (
     <div className="tiles">
       {newTileTile}
       {tiles.map(({ title, id }) => (
-        <ReminderTile key={id} id={id} title={title} />
+        <NoteTile key={id} id={id} title={title} />
       ))}
     </div>
   );

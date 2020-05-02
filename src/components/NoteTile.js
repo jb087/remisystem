@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './css/ReminderTile.css';
+import './css/NoteTile.css';
 
-export default function ReminderTile({ id, title }) {
+export default function NoteTile({ id, title }) {
   return (
     <Link to={`reminder/${id}`}>
       <div className="reminder-tile">{title}</div>
