@@ -5,7 +5,7 @@ import './css/NoteTile.css';
 export default function NoteTile({ id, title }) {
   return (
     <Link to={`reminder/${id}`}>
-      <div className="reminder-tile">{title}</div>
+      <div className="note-tile">{title}</div>
     </Link>
   );
 }

@@ -1,62 +1,66 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, Redirect } from 'react-router-dom';
 import './css/Note.css';
 
+import Reminders from './Reminders';
+import NoteForm from './NoteForm';
+import ButtonWithSpinner from './ButtonWithSpinner';
+
 export default function Note() {
-  let { reminderId } = useParams();
-  const { title, description } = {
-    title: 'asdfasdf',
-    description: 'asdfasfd',
+  const { noteId } = useParams();
+  const [blocked, setBlocked] = useState(false);
+  const [noteDeleted, setNoteDeleted] = useState(false);
+  const [error, setError] = useState(null);
+
+  if (noteDeleted) {
+    return <Redirect to="/" />;
+  }
+
+  const deleteNote = () => {
+    setBlocked(true);
+
+    setError(null);
+
+    setTimeout(() => {
+      console.log('deleted');
+      setError('Error while deleting note.');
+      setBlocked(false);
+      // setNoteDeleted(true);
+    }, 1500);
   };
 
   return (
     <div className="row justify-content-center">
-      {reminderId}
       <div className="col-lg-8">
         <div className="card">
-          <h5 className="card-header">Reminder</h5>
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <h5 className="mb-0">Note</h5>
+            <ButtonWithSpinner
+              type="button"
+              className="btn btn-outline-danger"
+              onClick={() => deleteNote()}
+              isDuringProcessing={blocked}
+              label="Delete whole note"
+              labelProcessing="Deleting note..."
+            />
+          </div>
           <div className="card-body">
-            <form>
-              <div className="form-group">
-                <label htmlFor="title">Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="title"
-                  placeholder="Title"
-                  defaultValue={title}
-                />
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
               </div>
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  className="form-control"
-                  id="description"
-                  rows="3"
-                  defaultValue={description}
-                />
+            )}
+            <div className="row">
+              <div className="col-sm note__col">
+                <NoteForm noteId={noteId} blocked={blocked} />
               </div>
-              <div className="reminder-panel__btns">
-                <button
-                  type="button"
-                  className="btn btn-warning reminder-panel__btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger reminder-panel__btn"
-                >
-                  Delete
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary reminder-panel__btn"
-                >
-                  Save
-                </button>
+              <div className="col-sm border-left border-fark">
+                <Reminders noteId={noteId} blocked={blocked} />
               </div>
-            </form>
+            </div>
+            <div className="row">
+              <div className="col-sm"></div>
+            </div>
           </div>
         </div>
       </div>

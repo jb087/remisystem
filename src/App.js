@@ -20,50 +20,53 @@ import UserProvider from './providers/UserProvider';
 
 function App() {
   return (
-    <Router>
-      <UserProvider>
-        <main className="app">
-          <Switch>
-            <Route path="/signIn">
-              <PanelUnlogged>
-                <SignIn />
-              </PanelUnlogged>
-            </Route>
-            <Route path="/signUp">
-              <PanelUnlogged>
-                <SignUp />
-              </PanelUnlogged>
-            </Route>
-            <Route path="/passwordReset">
-              <PanelUnlogged>
-                <PasswordReset />
-              </PanelUnlogged>
-            </Route>
-            <Route path="/" exact>
-              <Panel>
-                <Home />
-              </Panel>
-            </Route>
-            <Route path="/reminder/:reminderId">
-              <Panel>
-                <Note />
-              </Panel>
-            </Route>
-            <Route path="/newreminder">
-              <Panel>
-                <NewNote />
-              </Panel>
-            </Route>
-            <Route path="/settings">
-              <Panel>
-                <Settings />
-              </Panel>
-            </Route>
-            <Route render={() => <Redirect to="/" />} />
-          </Switch>
-        </main>
-      </UserProvider>
-    </Router>
+    <>
+      <Router>
+        <UserProvider>
+          <main className="app">
+            <Switch>
+              <Route path="/signIn">
+                <PanelUnlogged>
+                  <SignIn />
+                </PanelUnlogged>
+              </Route>
+              <Route path="/signUp">
+                <PanelUnlogged>
+                  <SignUp />
+                </PanelUnlogged>
+              </Route>
+              <Route path="/passwordReset">
+                <PanelUnlogged>
+                  <PasswordReset />
+                </PanelUnlogged>
+              </Route>
+              <Route path="/" exact>
+                <Panel>
+                  <Home />
+                </Panel>
+              </Route>
+              <Route path="/reminder/:noteId">
+                <Panel>
+                  <Note />
+                </Panel>
+              </Route>
+              <Route path="/newreminder">
+                <Panel>
+                  <NewNote />
+                </Panel>
+              </Route>
+              <Route path="/settings">
+                <Panel>
+                  <Settings />
+                </Panel>
+              </Route>
+              <Route render={() => <Redirect to="/" />} />
+            </Switch>
+          </main>
+        </UserProvider>
+      </Router>
+      <div id="modal-backdrop"></div>
+    </>
   );
 }
 

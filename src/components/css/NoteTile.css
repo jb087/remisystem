@@ -1,8 +1,8 @@
-.reminder-tile {
+.note-tile {
   margin: 10px;
 }
 
-.reminder-tile {
+.note-tile {
   width: 200px;
   height: 200px;
   background: white;
@@ -23,6 +23,6 @@
   color: #333;
 }
 
-.reminder-tile:hover {
+.note-tile:hover {
   box-shadow: 0px 0px 7px #007bff;
 }
