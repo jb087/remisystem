@@ -45,14 +45,14 @@ function App() {
                   <Home />
                 </Panel>
               </Route>
-              <Route path="/reminder/:noteId">
-                <Panel>
-                  <Note />
-                </Panel>
-              </Route>
-              <Route path="/newreminder">
+              <Route path="/newnote">
                 <Panel>
                   <NewNote />
+                </Panel>
+              </Route>
+              <Route path="/note/:noteId">
+                <Panel>
+                  <Note />
                 </Panel>
               </Route>
               <Route path="/settings">

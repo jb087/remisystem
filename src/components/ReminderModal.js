@@ -5,7 +5,7 @@ import 'flatpickr/dist/themes/material_blue.css';
 import ReminderModalBackdrop from './ReminderModalBackdrop';
 
 export default function ReminderModal({ show, onSave, onCancel }) {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState([new Date()]);
 
   return (
     <>
@@ -44,7 +44,7 @@ export default function ReminderModal({ show, onSave, onCancel }) {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => onSave(date)}
+                onClick={() => onSave(date[0])}
               >
                 Save changes
               </button>
