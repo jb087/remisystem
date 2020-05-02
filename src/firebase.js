@@ -3,13 +3,14 @@ import 'firebase/auth';
 import 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCtuqQ7Kk-FJ_g43PGzktF4cKV9-qb80N8',
-  authDomain: 'remisystem-6a6f2.firebaseapp.com',
-  databaseURL: 'https://remisystem-6a6f2.firebaseio.com',
-  projectId: 'remisystem-6a6f2',
-  storageBucket: 'remisystem-6a6f2.appspot.com',
-  messagingSenderId: '246548750377',
-  appId: '1:246548750377:web:19adc35a0e896f00453c38',
+  apiKey: 'AIzaSyAGnWAYBQjnjuEbemUMAtI-HPNbqpjJVQ0',
+  authDomain: 'remisystem-75ab6.firebaseapp.com',
+  databaseURL: 'https://remisystem-75ab6.firebaseio.com',
+  projectId: 'remisystem-75ab6',
+  storageBucket: 'remisystem-75ab6.appspot.com',
+  messagingSenderId: '506713044142',
+  appId: '1:506713044142:web:28aabdc3c648653976293f',
+  measurementId: 'G-P7P7DK6T86',
 };
 
 firebase.initializeApp(firebaseConfig);

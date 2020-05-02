@@ -7,7 +7,6 @@ export default function UserProvider({ children }) {
   const [user, setUser] = useState({ userAuth: null });
   const [isAfterFirstCheck, setIsAfterFirstCheck] = useState(false);
   const forceUserAuthUpdate = useCallback(() => {
-    console.log(auth, auth.currentUser);
     setUser({ userAuth: auth.currentUser });
   }, [setUser]);
 

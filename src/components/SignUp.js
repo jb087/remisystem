@@ -116,8 +116,8 @@ export default function SignUp() {
               );
             }}
             isDuringProcessing={isDuringProcessing}
-            label="Sign un"
-            labelProcessing="Signing un..."
+            label="Sign up"
+            labelProcessing="Signing up..."
           />
         </form>
       </div>
