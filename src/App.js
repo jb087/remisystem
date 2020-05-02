@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,16 +6,17 @@ import {
   Redirect,
 } from 'react-router-dom';
 
-import HomePanel from './components/HomePanel';
+import Home from './components/Home';
 import SignIn from './components/SignIn';
-import SettingsPanel from './components/SettingsPanel';
+import Settings from './components/Settings';
 import NewReminder from './components/NewReminder';
-import ReminderPanel from './components/ReminderPanel';
+import Reminder from './components/Reminder';
 import SignUp from './components/SignUp';
 import PasswordReset from './components/PasswordReset';
-
-import UserProvider, { UserContext } from './providers/UserProvider';
 import Panel from './components/Panel';
+import PanelUnlogged from './components/PanelUnlogged';
+
+import UserProvider from './providers/UserProvider';
 
 function App() {
   return (
@@ -24,26 +25,38 @@ function App() {
         <main className="app">
           <Switch>
             <Route path="/signIn">
-              <SignIn />
+              <PanelUnlogged>
+                <SignIn />
+              </PanelUnlogged>
             </Route>
             <Route path="/signUp">
-              <SignUp />
+              <PanelUnlogged>
+                <SignUp />
+              </PanelUnlogged>
             </Route>
             <Route path="/passwordReset">
-              <PasswordReset />
+              <PanelUnlogged>
+                <PasswordReset />
+              </PanelUnlogged>
             </Route>
             <Route path="/" exact>
-              <HomePanel />
+              <Panel>
+                <Home />
+              </Panel>
             </Route>
             <Route path="/reminder/:reminderId">
-              <ReminderPanel />
+              <Panel>
+                <Reminder />
+              </Panel>
             </Route>
             <Route path="/newreminder">
-              <NewReminder />
+              <Panel>
+                <NewReminder />
+              </Panel>
             </Route>
             <Route path="/settings">
               <Panel>
-                <SettingsPanel />
+                <Settings />
               </Panel>
             </Route>
             <Route render={() => <Redirect to="/" />} />

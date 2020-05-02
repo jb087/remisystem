@@ -30,7 +30,12 @@ export default function useForm(initialFields) {
       const { name, value } = event.currentTarget;
       dispatch({ type: SET_FIELD, fieldName: name, fieldValue: value });
     },
-
+    [dispatch]
+  );
+  const onFieldChangeCustom = useCallback(
+    (fieldName, fieldValue) => {
+      dispatch({ type: SET_FIELD, fieldName, fieldValue });
+    },
     [dispatch]
   );
   const setIsDuringProcessing = useCallback(
@@ -39,5 +44,5 @@ export default function useForm(initialFields) {
     [dispatch]
   );
 
-  return [fields, isDuringProcessing, onFieldChange, setIsDuringProcessing];
+  return [fields, isDuringProcessing, onFieldChange, setIsDuringProcessing, onFieldChangeCustom];
 }

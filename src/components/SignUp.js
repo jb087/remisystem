@@ -1,16 +1,27 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import PanelUnlogged from './PanelUnlogged';
 import { auth, generateUserDocument } from '../firebase';
 import { UserContext } from '../providers/UserProvider';
+import useForm from '../hooks/useForm';
+import ButtonWithSpinner from './ButtonWithSpinner';
 
 export default function SignUp() {
   const { forceUserAuthUpdate } = useContext(UserContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [
+    fields,
+    isDuringProcessing,
+    onChange,
+    setIsDuringProcessing,
+  ] = useForm({ email: '', password: '', displayName: '' });
   const [error, setError] = useState(null);
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
 
   const createUserWithEmailAndPasswordHandler = async (
     event,
@@ -19,36 +30,33 @@ export default function SignUp() {
     password
   ) => {
     event.preventDefault();
+    setIsDuringProcessing(true);
+
+    setError(null);
+
     try {
-      auth.createUserWithEmailAndPassword(email, password).then((userCred) => {
-        userCred.user
-          .updateProfile({
-            displayName,
-          })
-          .then(() => {
-            forceUserAuthUpdate();
-          });
+      const userCred = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      await userCred.user.updateProfile({
+        displayName,
       });
+      forceUserAuthUpdate();
       // await generateUserDocument(user, { sendEmailReminders: false });
     } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  const onChangeHandler = (event) => {
-    const { name, value } = event.currentTarget;
-
-    if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'password') {
-      setPassword(value);
-    } else if (name === 'displayName') {
-      setDisplayName(value);
+      if (componentIsMounted.current) {
+        setError(error.message);
+      }
+    } finally {
+      if (componentIsMounted.current) {
+        setIsDuringProcessing(false);
+      }
     }
   };
 
   return (
-    <PanelUnlogged>
+    <>
       <h5 className="card-header">Sign Up</h5>
       <div className="card-body">
         {error && (
@@ -64,9 +72,10 @@ export default function SignUp() {
               className="form-control"
               name="displayName"
               id="displayName"
-              placeholder="Your displayName"
-              value={displayName}
-              onChange={onChangeHandler}
+              placeholder="Your Name"
+              value={fields.displayName}
+              onChange={onChange}
+              disabled={isDuringProcessing}
             />
           </div>
           <div className="form-group">
@@ -78,8 +87,9 @@ export default function SignUp() {
               id="email"
               aria-describedby="emailHelp"
               placeholder="Enter email"
-              value={email}
-              onChange={onChangeHandler}
+              value={fields.email}
+              onChange={onChange}
+              disabled={isDuringProcessing}
             />
           </div>
           <div className="form-group">
@@ -90,31 +100,33 @@ export default function SignUp() {
               name="password"
               id="password"
               placeholder="Password"
-              value={password}
-              onChange={onChangeHandler}
+              value={fields.password}
+              onChange={onChange}
+              disabled={isDuringProcessing}
             />
           </div>
-          <button
+          <ButtonWithSpinner
             type="submit"
             className="btn btn-primary"
             onClick={(event) => {
               createUserWithEmailAndPasswordHandler(
                 event,
-                displayName,
-                email,
-                password
+                fields.displayName,
+                fields.email,
+                fields.password
               );
             }}
-          >
-            Sign up
-          </button>
+            isDuringProcessing={isDuringProcessing}
+            label="Sign un"
+            labelProcessing="Signing un..."
+          />
         </form>
       </div>
       <div className="card-footer d-flex justify-content-center align-items-center">
         <span>
-          Already have an account? <Link to="/signIp">Sign in here</Link>
+          Already have an account? <Link to="/signIn">Sign in here</Link>
         </span>
       </div>
-    </PanelUnlogged>
+    </>
   );
 }

@@ -1,33 +1,35 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import PanelUnlogged from './PanelUnlogged';
 import { auth } from '../firebase';
+import useForm from '../hooks/useForm';
+import ButtonWithSpinner from './ButtonWithSpinner';
 
 export default function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [
+    fields,
+    isDuringProcessing,
+    onChange,
+    setIsDuringProcessing,
+  ] = useForm({ email: '', password: '' });
   const [error, setError] = useState(null);
 
   const signInHandler = (event, email, password) => {
     event.preventDefault();
-    auth.signInWithEmailAndPassword(email, password).catch((error) => {
-      setError(error.message);
-    });
-  };
+    setIsDuringProcessing(true);
 
-  const onChangeHandler = (event) => {
-    const { name, value } = event.currentTarget;
+    setError(null);
 
-    if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'password') {
-      setPassword(value);
-    }
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .catch((error) => {
+        setError(error.message);
+      })
+      .finally(() => setIsDuringProcessing(false));
   };
 
   return (
-    <PanelUnlogged>
+    <>
       <h5 className="card-header">Sign In</h5>
       <div className="card-body">
         {error && (
@@ -45,8 +47,9 @@ export default function SignIn() {
               name="email"
               aria-describedby="emailHelp"
               placeholder="Enter email"
-              value={email}
-              onChange={onChangeHandler}
+              value={fields.email}
+              onChange={onChange}
+              disabled={isDuringProcessing}
             />
           </div>
           <div className="form-group">
@@ -57,18 +60,21 @@ export default function SignIn() {
               id="password"
               name="password"
               placeholder="Password"
-              value={password}
-              onChange={onChangeHandler}
+              value={fields.password}
+              onChange={onChange}
+              disabled={isDuringProcessing}
             />
           </div>
-
-          <button
+          <ButtonWithSpinner
             type="submit"
             className="btn btn-primary"
-            onClick={(event) => signInHandler(event, email, password)}
-          >
-            Submit
-          </button>
+            onClick={(event) =>
+              signInHandler(event, fields.email, fields.password)
+            }
+            isDuringProcessing={isDuringProcessing}
+            label="Sign in"
+            labelProcessing="Signing in..."
+          />
         </form>
       </div>
       <div className="card-footer d-flex flex-column justify-content-center align-items-center">
@@ -77,6 +83,6 @@ export default function SignIn() {
         </span>
         <Link to="/passwordReset">Forgot password?</Link>
       </div>
-    </PanelUnlogged>
+    </>
   );
 }

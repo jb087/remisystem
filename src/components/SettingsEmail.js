@@ -1,37 +1,44 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
-import { auth } from '../firebase';
-import { Link } from 'react-router-dom';
 import ButtonWithSpinner from './ButtonWithSpinner';
+
+import { UserContext } from '../providers/UserProvider';
 import useForm from '../hooks/useForm';
 
-export default function PasswordReset() {
+export default function SettingsEmail() {
+  const {
+    user: { userAuth },
+  } = useContext(UserContext);
   const [
     fields,
     isDuringProcessing,
     onChange,
     setIsDuringProcessing,
-  ] = useForm({ email: '' });
-  const [error, setError] = useState(null);
+  ] = useForm({ email: userAuth.email });
   const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
-  const resetHandler = (event, email) => {
+  const updateEmail = async (event, email) => {
     event.preventDefault();
     setIsDuringProcessing(true);
 
     setSuccess(null);
     setError(null);
 
-    auth
-      .sendPasswordResetEmail(email)
-      .then(() => setSuccess('Reset email has been sent.'))
-      .catch((error) => setError(error.message))
-      .finally(() => setIsDuringProcessing(false));
+    try {
+      await userAuth.updateEmail(email);
+      setSuccess('Email has been changed.');
+    } catch (error) {
+      setError(error.message);
+      console.error(error);
+    } finally {
+      setIsDuringProcessing(false);
+    }
   };
 
   return (
-    <>
-      <h5 className="card-header">Reset Password</h5>
+    <div className="card mb-3">
+      <h5 className="card-header">Change Email</h5>
       <div className="card-body">
         {success && (
           <div className="alert alert-success" role="alert">
@@ -45,14 +52,13 @@ export default function PasswordReset() {
         )}
         <form>
           <div className="form-group">
-            <label htmlFor="email">Email address</label>
+            <label htmlFor="email">New email</label>
             <input
               type="email"
               className="form-control"
               id="email"
               name="email"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
+              placeholder="Email"
               value={fields.email}
               onChange={onChange}
               disabled={isDuringProcessing}
@@ -61,16 +67,13 @@ export default function PasswordReset() {
           <ButtonWithSpinner
             type="submit"
             className="btn btn-primary"
-            onClick={(event) => resetHandler(event, fields.email)}
+            onClick={(event) => updateEmail(event, fields.email)}
             isDuringProcessing={isDuringProcessing}
-            label="Send reset email"
-            labelProcessing="Sending email..."
+            label="Save"
+            labelProcessing="Saving..."
           />
         </form>
       </div>
-      <div className="card-footer d-flex flex-column justify-content-center align-items-center">
-        <Link to="/signIp">Go back to Sign In</Link>
-      </div>
-    </>
+    </div>
   );
 }
