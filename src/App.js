@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import './App.css';
 
 import Home from './components/Home';
 import SignIn from './components/SignIn';
