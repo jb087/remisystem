@@ -1,5 +1,6 @@
 const uuid = require('uuid');
 const Note = require('../entity/Note');
+const Reminder = require('../entity/Reminder');
 const schedulerService = require('../service/schedulerService');
 const sqlite = require('sqlite3').verbose();
 
@@ -100,5 +101,33 @@ function deleteNote(noteId, response) {
         }
 
         response.sendStatus(200);
+    })
+}
+
+exports.createNoteWithReminders = (body, user, response) => {
+    const note = new Note(uuid.v1(), user.uid, body.note.title, body.note.description);
+
+    db.run("INSERT INTO NOTE (ID, USER_ID, TITLE, DESCRIPTION) VALUES (?, ?, ?, ?)", [note.id, note.userId, note.title, note.description],
+        async function (error, result) {
+            if (error) {
+                throw error;
+            }
+
+            await createReminders(body, note);
+
+            response.sendStatus(200);
+        })
+};
+
+function createReminders(body, note) {
+    body.reminders.forEach(reminder => {
+        const newReminder = new Reminder(uuid.v1(), note.id, reminder.time);
+
+        db.run("INSERT INTO REMINDER (ID, NOTE_ID, TIME) VALUES (?, ?, ?)", [newReminder.id, newReminder.noteId, newReminder.time],
+            function (error) {
+                if (error) {
+                    throw error;
+                }
+            })
     })
 }

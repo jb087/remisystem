@@ -73,6 +73,25 @@ router.use(function (request, response, next) {
  *             format: uuid
  *         required:
  *           - id
+ *
+ *   NewNoteWithReminders:
+ *     type: object
+ *     properties:
+ *       note:
+ *         $ref: '#/definitions/NewNote'
+ *       reminders:
+ *         type: array
+ *         items:
+ *           type: object
+ *           properties:
+ *             time:
+ *               type: string
+ *           required:
+ *             - time
+ *     required:
+ *       - note
+ *       - reminders
+ *
  */
 
 /**
@@ -125,7 +144,7 @@ router.get('/note/:id', authService, function (request, response, next) {
 
 /**
  * @swagger
- * /api/notesByUser:
+ * /api/notes-by-user:
  *   get:
  *     security:
  *       - Bearer: []
@@ -138,7 +157,7 @@ router.get('/note/:id', authService, function (request, response, next) {
  *       401:
  *         description: Problem with authorization
  */
-router.get('/notesByUser', authService, function (request, response, next) {
+router.get('/notes-by-user', authService, function (request, response, next) {
     noteService.getNotesByUser(request.user, response);
 });
 
@@ -327,6 +346,31 @@ router.post('/reminder', authService, function (request, response, next) {
  */
 router.delete('/reminder/:id', authService, function (request, response, next) {
     reminderService.deleteReminder(request.params.id, response);
+});
+
+/**
+ * @swagger
+ * /api/note-with-reminders:
+ *   post:
+ *     security:
+ *       - Bearer: []
+ *     description: It is used to create note with reminders
+ *     parameters:
+ *       - name: newNoteWithReminders
+ *         description: Note with Reminders object
+ *         in: body
+ *         required: true
+ *         type: string
+ *         schema:
+ *           $ref: '#/definitions/NewNoteWithReminders'
+ *     responses:
+ *       200:
+ *         description: Note with Reminders successfully created
+ *       401:
+ *         description: Problem with authorization
+ */
+router.post('/note-with-reminders', authService, function (request, response, next) {
+    noteService.createNoteWithReminders(request.body, request.user, response);
 });
 
 module.exports = router;
