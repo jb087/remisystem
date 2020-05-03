@@ -15,7 +15,6 @@ export default function Reminder({
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
-        second: 'numeric',
       }).format(new Date(time))}
       {duringAdding && (
         <span

@@ -4,7 +4,7 @@ export default function ButtonWithSpinner({
   isDuringProcessing,
   label,
   labelProcessing,
-  disabled=false,
+  disabled = false,
   ...buttonAttributes
 }) {
   return (
@@ -14,7 +14,7 @@ export default function ButtonWithSpinner({
           className="spinner-border spinner-border-sm"
           role="status"
           aria-hidden="true"
-        ></span>
+        />
       )}
       {isDuringProcessing ? ` ${labelProcessing}` : label}
     </button>

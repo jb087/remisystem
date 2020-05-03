@@ -1,31 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import useForm from '../hooks/useForm';
+import useReminders from '../hooks/useReminders';
 
-import LoadingSpinner from './LoadingSpinner';
+import NoteCard from './NoteCard';
 
 export default function NewNote() {
+  const [
+    reminders,
+    newReminders,
+    deletedRemindersIds,
+    addReminder,
+    deleteReminder,
+    ,
+  ] = useReminders();
+  const allReminders = [...reminders, ...newReminders];
+  const [fields, isSaving, onChange, setIsSaving, ,] = useForm({
+    title: '',
+    description: '',
+  });
   const [newNoteId, setNewNoteId] = useState(null);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const onReminderAdd = (newReminder) => {
+    addReminder({ ...newReminder, noteId: null });
+  };
+
+  const onSave = (event) => {
+    event.preventDefault();
+    setIsSaving(true);
+
+    setError(null);
+
+    console.log(
+      fields.title,
+      fields.description,
+      newReminders,
+      deletedRemindersIds
+    );
     setTimeout(() => {
-      setNewNoteId('adsfa');
-    }, 800);
-  }, [setNewNoteId]);
+      setError('asdf');
+      setNewNoteId('asdf-new-123');
+    }, 1800);
+  };
 
   if (newNoteId) {
     return <Redirect to={`/note/${newNoteId}`} />;
   }
 
   return (
-    <div className="row justify-content-center">
-      <div className="col-lg-8">
-        <div className="card">
-          <div className="card-body d-flex flex-column justify-content-center align-items-center">
-            <h4>Creating new note...</h4>
-            <LoadingSpinner />
-          </div>
-        </div>
-      </div>
-    </div>
+    <NoteCard
+      cardTitle="New Note"
+      allReminders={allReminders}
+      title={fields.title}
+      description={fields.description}
+      onSave={onSave}
+      onFormFieldChange={onChange}
+      onReminderAdd={onReminderAdd}
+      onReminderDelete={deleteReminder}
+      isSaving={isSaving}
+      isDeleting={false}
+      error={error}
+    />
   );
 }
