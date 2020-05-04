@@ -1,0 +1,11 @@
+.reminder {
+  background-color: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.reminder__btn {
+  margin-top: -5px;
+  margin-bottom: -5px;
+  margin-right: -5px;
+  height: 34px;
+}
