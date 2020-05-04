@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import { getUrl, getRequestInit } from '../helpers/request';
+
 import useForm from '../hooks/useForm';
 import useReminders from '../hooks/useReminders';
+import useToken from '../hooks/useToken';
 
 import NoteCard from './NoteCard';
 
 export default function NewNote() {
-  const [
-    reminders,
-    newReminders,
-    deletedRemindersIds,
-    addReminder,
-    deleteReminder,
-    ,
-  ] = useReminders();
-  const allReminders = [...reminders, ...newReminders];
+  const getIdToken = useToken();
+  const [, newReminders, , addReminder, deleteReminder, ,] = useReminders();
   const [fields, isSaving, onChange, setIsSaving, ,] = useForm({
     title: '',
     description: '',
@@ -22,26 +18,35 @@ export default function NewNote() {
   const [newNoteId, setNewNoteId] = useState(null);
   const [error, setError] = useState(null);
 
-  const onReminderAdd = (newReminder) => {
-    addReminder({ ...newReminder, noteId: null });
-  };
-
   const onSave = (event) => {
     event.preventDefault();
     setIsSaving(true);
-
     setError(null);
 
-    console.log(
-      fields.title,
-      fields.description,
-      newReminders,
-      deletedRemindersIds
-    );
-    setTimeout(() => {
-      setError('asdf');
-      setNewNoteId('asdf-new-123');
-    }, 1800);
+    async function saveNote() {
+      try {
+        const token = await getIdToken();
+        const response = await fetch(
+          getUrl('note-with-reminders'),
+          getRequestInit(token, {
+            method: 'post',
+            body: JSON.stringify({
+              note: { title: fields.title, description: fields.description },
+              reminders: newReminders.map((reminder) => ({
+                time: reminder.time / 1000,
+              })),
+            }),
+          })
+        );
+        const newNoteId = await response.json();
+
+        setNewNoteId(newNoteId);
+      } catch (error) {
+        setError('Error, note has not been saved.');
+        setIsSaving(false);
+      }
+    }
+    saveNote();
   };
 
   if (newNoteId) {
@@ -51,12 +56,12 @@ export default function NewNote() {
   return (
     <NoteCard
       cardTitle="New Note"
-      allReminders={allReminders}
+      allReminders={newReminders}
       title={fields.title}
       description={fields.description}
       onSave={onSave}
       onFormFieldChange={onChange}
-      onReminderAdd={onReminderAdd}
+      onReminderAdd={addReminder}
       onReminderDelete={deleteReminder}
       isSaving={isSaving}
       isDeleting={false}

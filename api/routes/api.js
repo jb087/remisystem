@@ -366,6 +366,9 @@ router.delete('/reminder/:id', authService, function (request, response, next) {
  *     responses:
  *       200:
  *         description: Note with Reminders successfully created
+ *         schema:
+ *            type: integer
+ *            description: Id of the new note
  *       401:
  *         description: Problem with authorization
  */
