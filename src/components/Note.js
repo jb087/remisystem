@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
+import {
+  updateNote,
+  deleteNote,
+  getNoteWithReminders,
+} from '../services/noteService';
+
 import useReminders from '../hooks/useReminders';
 import useForm from '../hooks/useForm';
+import useToken from '../hooks/useToken';
 
 import LoadingSpinner from './LoadingSpinner';
 import NoteCard from './NoteCard';
 
 export default function Note() {
+  const getIdToken = useToken();
   const { noteId } = useParams();
   const [
     reminders,
@@ -17,7 +25,13 @@ export default function Note() {
     resetReminders,
   ] = useReminders();
   const allReminders = [...reminders, ...newReminders];
-  const [fields, isSaving, onChange, setIsSaving, ,] = useForm({
+  const [
+    fields,
+    isSaving,
+    onChange,
+    setIsSaving,
+    onFieldChangeCustom,
+  ] = useForm({
     title: '',
     description: '',
   });
@@ -29,57 +43,59 @@ export default function Note() {
 
   const onNoteDelete = () => {
     setIsDeleting(true);
-
     setError(null);
+    setSuccess(null);
 
-    setTimeout(() => {
-      console.log('deleted');
-      setError('Error while deleting note.');
-      setIsDeleting(false);
-      // setNoteDeleted(true);
-    }, 1500);
-  };
-
-  const onReminderAdd = (newReminder) => {
-    addReminder({ ...newReminder, noteId });
+    deleteNote(getIdToken, noteId)
+      .then(() => setNoteDeleted(true))
+      .catch(() => {
+        setError('Error, note has not been saved.');
+        setIsDeleting(false);
+      });
   };
 
   const onSave = (event) => {
     event.preventDefault();
     setIsSaving(true);
-
     setError(null);
+    setSuccess(null);
 
-    console.log(
-      fields.title,
-      fields.description,
-      newReminders,
-      deletedRemindersIds
-    );
-    setTimeout(() => {
-      setSuccess('Note has been saved');
-      setIsSaving(false);
-    }, 1800);
+    updateNote(
+      getIdToken,
+      { noteId, title: fields.title, description: fields.description },
+      deletedRemindersIds,
+      newReminders
+    )
+      .then(() => setSuccess('Note has been saved'))
+      .catch(() => setError('Error, note has not been saved.'))
+      .finally(() => setIsSaving(false));
   };
 
   useEffect(() => {
-    async function fetchReminders() {
-      setIsFetching(true);
-      setError(null);
+    setIsFetching(true);
+    setError(null);
 
-      setTimeout(() => {
-        resetReminders([
-          { id: 'i-1', time: 1588602600 * 1000 },
-          { id: 'i-2', time: 1588604600 * 1000 },
-        ]);
-        setIsFetching(false);
-        // setError('Error while deleting note.');
-        // setNoteDeleted(true);
-      }, 1500);
-    }
-
-    fetchReminders();
-  }, [noteId, resetReminders]);
+    getNoteWithReminders(getIdToken, noteId)
+      .then(([note, reminders]) => {
+        onFieldChangeCustom('title', note.title);
+        onFieldChangeCustom('description', note.description);
+        resetReminders(
+          reminders.map((reminder) => ({
+            ...reminder,
+            time: reminder.time * 1000,
+          }))
+        );
+      })
+      .catch(() => setError('Error while loading note.'))
+      .finally(() => setIsFetching(false));
+  }, [
+    noteId,
+    getIdToken,
+    resetReminders,
+    setIsFetching,
+    setError,
+    onFieldChangeCustom,
+  ]);
 
   if (noteDeleted) {
     return <Redirect to="/" />;
@@ -102,7 +118,7 @@ export default function Note() {
                 </button>
               </div>
               <div className="card-body">
-                <div className="row" style={{height: '250px'}}>
+                <div className="row" style={{ height: '250px' }}>
                   <LoadingSpinner />
                 </div>
               </div>
@@ -118,7 +134,7 @@ export default function Note() {
           description={fields.description}
           onSave={onSave}
           onFormFieldChange={onChange}
-          onReminderAdd={onReminderAdd}
+          onReminderAdd={addReminder}
           onReminderDelete={deleteReminder}
           onNoteDelete={onNoteDelete}
           isSaving={isSaving}

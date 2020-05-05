@@ -115,7 +115,7 @@ exports.createNoteWithReminders = (body, user, response) => {
 
             await createReminders(body, note);
 
-            response.sendStatus(200);
+            response.status(200).json(note.id);
         })
 };
 
