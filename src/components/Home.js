@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getUrl, getRequestInit } from '../helpers/request';
+import { getNotesByUser } from '../services/noteService';
 
 import Tiles from './Tiles';
 import useToken from '../hooks/useToken';
@@ -10,21 +10,9 @@ export default function Home() {
   const [notes, setNotes] = useState(null);
 
   useEffect(() => {
-    async function fetchNotes() {
-      try {
-        const token = await getIdToken();
-        const response = await fetch(
-          getUrl('notes-by-user'),
-          getRequestInit(token, { method: 'get' })
-        );
-        const data = await response.json();
-
-        setNotes(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchNotes();
+    getNotesByUser(getIdToken)
+      .then((notes) => setNotes(notes))
+      .catch((error) => console.error(error));
   }, [setNotes, getIdToken]);
 
   return (

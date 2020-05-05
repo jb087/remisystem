@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
-import { getUrl, getRequestInit } from '../helpers/request';
+import {
+  updateNote,
+  deleteNote,
+  getNoteWithReminders,
+} from '../services/noteService';
 
 import useReminders from '../hooks/useReminders';
 import useForm from '../hooks/useForm';
@@ -42,23 +46,12 @@ export default function Note() {
     setError(null);
     setSuccess(null);
 
-    async function deleteNote() {
-      try {
-        const token = await getIdToken();
-        await fetch(
-          getUrl(`note/${noteId}`),
-          getRequestInit(token, {
-            method: 'delete',
-          })
-        );
-
-        setNoteDeleted(true);
-      } catch (error) {
+    deleteNote(getIdToken, noteId)
+      .then(() => setNoteDeleted(true))
+      .catch(() => {
         setError('Error, note has not been saved.');
         setIsDeleting(false);
-      }
-    }
-    deleteNote();
+      });
   };
 
   const onSave = (event) => {
@@ -67,75 +60,23 @@ export default function Note() {
     setError(null);
     setSuccess(null);
 
-    async function saveNote() {
-      try {
-        const token = await getIdToken();
-        const noteResponse = fetch(
-          getUrl(`note/${noteId}`),
-          getRequestInit(token, {
-            method: 'put',
-            body: JSON.stringify({
-              title: fields.title,
-              description: fields.description,
-            }),
-          })
-        );
-        const deleteRemindersResponses = deletedRemindersIds.map(
-          (deletedReminderId) =>
-            fetch(
-              getUrl(`reminder/${deletedReminderId}`),
-              getRequestInit(token, { method: 'delete' })
-            )
-        );
-        const addRemindersResponses = newReminders.map((reminder) =>
-          fetch(
-            getUrl(`reminder`),
-            getRequestInit(token, {
-              method: 'post',
-              body: JSON.stringify({
-                noteId,
-                time: reminder.time / 1000,
-              }),
-            })
-          )
-        );
-
-        await Promise.all([
-          noteResponse,
-          ...deleteRemindersResponses,
-          ...addRemindersResponses,
-        ]);
-
-        setSuccess('Note has been saved');
-      } catch (error) {
-        setError('Error, note has not been saved.');
-      } finally {
-        setIsSaving(false);
-      }
-    }
-    saveNote();
+    updateNote(
+      getIdToken,
+      { noteId, title: fields.title, description: fields.description },
+      deletedRemindersIds,
+      newReminders
+    )
+      .then(() => setSuccess('Note has been saved'))
+      .catch(() => setError('Error, note has not been saved.'))
+      .finally(() => setIsSaving(false));
   };
 
   useEffect(() => {
-    async function fetchNoteWithReminders() {
-      setIsFetching(true);
-      setError(null);
+    setIsFetching(true);
+    setError(null);
 
-      try {
-        const token = await getIdToken();
-        const noteResponse = fetch(
-          getUrl(`note/${noteId}`),
-          getRequestInit(token, { method: 'get' })
-        );
-        const remindersResponse = fetch(
-          getUrl(`note/${noteId}/reminders`),
-          getRequestInit(token, { method: 'get' })
-        );
-        const [note, reminders] = await Promise.all([
-          noteResponse.then((response) => response.json()),
-          remindersResponse.then((response) => response.json()),
-        ]);
-
+    getNoteWithReminders(getIdToken, noteId)
+      .then(([note, reminders]) => {
         onFieldChangeCustom('title', note.title);
         onFieldChangeCustom('description', note.description);
         resetReminders(
@@ -144,14 +85,9 @@ export default function Note() {
             time: reminder.time * 1000,
           }))
         );
-        setIsFetching(false);
-      } catch (error) {
-        setError('Error while loading note.');
-      } finally {
-        setIsFetching(false);
-      }
-    }
-    fetchNoteWithReminders();
+      })
+      .catch(() => setError('Error while loading note.'))
+      .finally(() => setIsFetching(false));
   }, [
     noteId,
     getIdToken,

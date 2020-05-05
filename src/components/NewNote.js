@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { getUrl, getRequestInit } from '../helpers/request';
+import { saveNote } from '../services/noteService';
 
 import useForm from '../hooks/useForm';
 import useReminders from '../hooks/useReminders';
@@ -23,34 +23,16 @@ export default function NewNote() {
     setIsSaving(true);
     setError(null);
 
-    async function saveNote() {
-      try {
-        const token = await getIdToken();
-        const response = await fetch(
-          getUrl('note-with-reminders'),
-          getRequestInit(token, {
-            method: 'post',
-            body: JSON.stringify({
-              note: { title: fields.title, description: fields.description },
-              reminders: newReminders.map((reminder) => ({
-                time: reminder.time / 1000,
-              })),
-            }),
-          })
-        );
-        const newNoteId = await response.json();
-
-        setNewNoteId(newNoteId);
-      } catch (error) {
+    saveNote(getIdToken, fields.title, fields.description, newReminders)
+      .then((newNoteId) => setNewNoteId(newNoteId))
+      .catch(() => {
         setError('Error, note has not been saved.');
         setIsSaving(false);
-      }
-    }
-    saveNote();
+      });
   };
 
   if (newNoteId) {
-    return <Redirect to={`/note/${newNoteId}`} />;
+    return <Redirect to="/" />;
   }
 
   return (
