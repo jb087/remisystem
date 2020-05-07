@@ -8,7 +8,7 @@ export async function saveReminder(getIdToken, noteId, time) {
       method: 'post',
       body: JSON.stringify({
         noteId,
-        time: time / 1000,
+        time,
       }),
     })
   );

@@ -82,7 +82,7 @@ export default function Note() {
         resetReminders(
           reminders.map((reminder) => ({
             ...reminder,
-            time: reminder.time * 1000,
+            time: reminder.time,
           }))
         );
       })
