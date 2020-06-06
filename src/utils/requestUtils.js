@@ -1,4 +1,4 @@
-export const getUrl = (endpoint) => `http://localhost:9000/api/${endpoint}`;
+export const getUrl = (endpoint) => `https://remisystem-api.herokuapp.com/api/${endpoint}`;
 
 export const getRequestInit = (token, init) => ({
   headers: new Headers({
