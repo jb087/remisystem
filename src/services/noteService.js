@@ -10,7 +10,7 @@ export async function saveNote(getIdToken, title, description, newReminders) {
       body: JSON.stringify({
         note: { title, description },
         reminders: newReminders.map((reminder) => ({
-          time: reminder.time / 1000,
+          time: reminder.time,
         })),
       }),
     })
