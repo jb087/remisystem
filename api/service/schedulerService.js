@@ -5,7 +5,7 @@ const _ = require('underscore');
 const mailService = require('./mailService');
 require('dotenv').config();
 
-const host = "https://remisystem-api.herokuapp.com/";
+const host = process.env.API_URL;
 const getRemindersPath = host + "api/reminders";
 const getNoteByIdPath = host + "api/note/{id}";
 const auth = "Bearer " + process.env.INTERNAL_BEARER;
