@@ -37,7 +37,7 @@ export default function Note() {
   });
   const [isFetching, setIsFetching] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [noteDeleted, setNoteDeleted] = useState(false);
+  const [redirectToHome, setRedirectToHome] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
 
@@ -47,7 +47,7 @@ export default function Note() {
     setSuccess(null);
 
     deleteNote(getIdToken, noteId)
-      .then(() => setNoteDeleted(true))
+      .then(() => setRedirectToHome(true))
       .catch(() => {
         setError('Error, note has not been saved.');
         setIsDeleting(false);
@@ -66,9 +66,11 @@ export default function Note() {
       deletedRemindersIds,
       newReminders
     )
-      .then(() => setSuccess('Note has been saved'))
-      .catch(() => setError('Error, note has not been saved.'))
-      .finally(() => setIsSaving(false));
+      .then(() => setRedirectToHome(true))
+      .catch(() => {
+        setError('Error, note has not been saved.');
+        setIsSaving(false);
+      });
   };
 
   useEffect(() => {
@@ -97,7 +99,7 @@ export default function Note() {
     onFieldChangeCustom,
   ]);
 
-  if (noteDeleted) {
+  if (redirectToHome) {
     return <Redirect to="/" />;
   }
 
