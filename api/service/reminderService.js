@@ -39,7 +39,7 @@ exports.getRemindersByNoteId = (noteId, response) => {
 exports.createReminder = (body, response) => {
     const reminder = new Reminder(uuid.v1(), body.noteId, body.time);
 
-    db.run("INSERT INTO REMINDER (ID, NOTE_ID, TIME) VALUES (?, ?, ?)", [reminder.id, reminder.noteId, String(reminder.time)],
+    db.run("INSERT INTO REMINDER (ID, NOTE_ID, TIME) VALUES (?, ?, ?)", [reminder.id, reminder.noteId, reminder.time],
         function (error) {
             if (error) {
                 throw error;

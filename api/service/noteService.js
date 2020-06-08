@@ -123,7 +123,7 @@ function createReminders(body, note) {
     body.reminders.forEach(reminder => {
         const newReminder = new Reminder(uuid.v1(), note.id, reminder.time);
 
-        db.run("INSERT INTO REMINDER (ID, NOTE_ID, TIME) VALUES (?, ?, ?)", [newReminder.id, newReminder.noteId, String(newReminder.time)],
+        db.run("INSERT INTO REMINDER (ID, NOTE_ID, TIME) VALUES (?, ?, ?)", [newReminder.id, newReminder.noteId, newReminder.time],
             function (error) {
                 if (error) {
                     throw error;
