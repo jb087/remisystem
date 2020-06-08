@@ -21,7 +21,7 @@ export default function NoteCard({
   success,
 }) {
   return (
-    <div className="row justify-content-center">
+    <div className="row justify-content-center" style={{ minWidth: '750px' }}>
       <div className="col-lg-8">
         <div className="card">
           <div className="card-header d-flex justify-content-between align-items-center">
@@ -67,7 +67,7 @@ export default function NoteCard({
                 />
               </div>
             </div>
-            <div className="row">
+            <div className="row pt-4">
               <div className="col-sm d-flex justify-content-end">
                 {isDeleting || isSaving ? (
                   // we render button because Link cannot be disabled

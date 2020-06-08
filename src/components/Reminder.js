@@ -1,5 +1,6 @@
 import React from 'react';
 import './css/Reminder.css';
+import { reminderToReadableFormat } from '../utils/reminderUtils';
 
 export default function Reminder({
   reminderData: { id, time },
@@ -9,13 +10,7 @@ export default function Reminder({
 }) {
   return (
     <div className="reminder text-dark rounded-lg d-flex justify-content-between align-items-center p-1 pl-2 mb-2">
-      {new Intl.DateTimeFormat('default', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-      }).format(new Date(time))}
+      {reminderToReadableFormat(time)}
       {duringAdding && (
         <span
           className="spinner-border spinner-border-sm mr-3"
