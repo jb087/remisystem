@@ -50,7 +50,7 @@ const timestampToReadableFormat = (timestamp) => {
     minute: 'numeric',
   });
 
-  return timestampFromat.format(new Date(timestamp));
+  return timestampFromat.format(new Date(parseInt(timestamp, 10)));
 };
 
 const cronToReadableFormat = (cron) => {
