@@ -3,6 +3,7 @@ const schedule = require('node-schedule');
 const cronParser = require('cron-parser');
 const _ = require('underscore');
 const mailService = require('./mailService');
+const notificationService = require('./notificationService');
 require('dotenv').config();
 
 const host = process.env.API_URL;
@@ -59,10 +60,10 @@ function scheduleDateJob(reminder) {
 
 function scheduledTask(reminder) {
     console.log("JobId: " + reminder.id);
-    sendReminderOnMail(reminder);
+    sendReminder(reminder);
 }
 
-function sendReminderOnMail(reminder) {
+function sendReminder(reminder) {
     fetch(getNoteByIdPath.replace("{id}", reminder.noteId), {
         method: "GET",
         headers: {
@@ -71,7 +72,10 @@ function sendReminderOnMail(reminder) {
         }
     })
         .then(response => response.json())
-        .then(note => mailService.sendReminderOnMail(note));
+        .then(note => {
+            notificationService.sendNotification(note);
+            mailService.sendReminderOnMail(note);
+        });
 }
 
 exports.deleteReminder = (id) => {
