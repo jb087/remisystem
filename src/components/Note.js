@@ -78,11 +78,11 @@ export default function Note() {
     setError(null);
 
     getNoteWithReminders(getIdToken, noteId)
-      .then(([note, reminders]) => {
-        onFieldChangeCustom('title', note.title);
-        onFieldChangeCustom('description', note.description);
+      .then(([fetchedNote, fetchedReminders]) => {
+        onFieldChangeCustom('title', fetchedNote.title);
+        onFieldChangeCustom('description', fetchedNote.description);
         resetReminders(
-          reminders.map((reminder) => ({
+          fetchedReminders.map((reminder) => ({
             ...reminder,
             time: reminder.time,
           }))

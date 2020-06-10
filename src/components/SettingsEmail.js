@@ -28,9 +28,9 @@ export default function SettingsEmail() {
     try {
       await userAuth.updateEmail(email);
       setSuccess('Email has been changed.');
-    } catch (error) {
-      setError(error.message);
-      console.error(error);
+    } catch (emailUpdateError) {
+      setError(emailUpdateError.message);
+      console.error(emailUpdateError);
     } finally {
       setIsDuringProcessing(false);
     }

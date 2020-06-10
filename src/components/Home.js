@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     getNotesByUser(getIdToken)
-      .then((notes) => setNotes(notes))
+      .then((fetchedNotes) => setNotes(fetchedNotes))
       .catch((error) => console.error(error));
   }, [setNotes, getIdToken]);
 

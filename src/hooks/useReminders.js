@@ -56,7 +56,7 @@ export default function useReminders() {
     [dispatch]
   );
   const resetReminders = useCallback(
-    (reminders) => dispatch({ type: RESET, reminders }),
+    (newReminders) => dispatch({ type: RESET, reminders: newReminders }),
     [dispatch]
   );
 

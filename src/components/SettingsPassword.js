@@ -28,9 +28,9 @@ export default function SettingsPassword() {
     try {
       await userAuth.updatePassword(password);
       setSuccess('Password has been changed.');
-    } catch (error) {
-      setError(error.message);
-      console.error(error);
+    } catch (passwordUpdateError) {
+      setError(passwordUpdateError.message);
+      console.error(passwordUpdateError);
     } finally {
       setIsDuringProcessing(false);
     }
