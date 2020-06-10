@@ -28,6 +28,5 @@ describe('GET /api/notes', () => {
         expect(result.status).toBe(200);
         expect(result.body.length).toBeGreaterThanOrEqual(1);
         expect(result.body.some(note => note.description === noteDescription)).toBe(true);
-        console.log(result.body);
     });
 });
