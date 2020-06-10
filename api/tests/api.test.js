@@ -8,7 +8,6 @@ let accessToken;
 beforeAll(async done => {
     
     accessToken = await TestUtils.getAccessToken();
-    console.log(accessToken);
 
     done();
 });
@@ -27,5 +26,8 @@ describe('GET /api/notes', () => {
 
         // Result
         expect(result.status).toBe(200);
+        expect(result.body.length).toBeGreaterThanOrEqual(1);
+        expect(result.body.some(note => note.description === noteDescription)).toBe(true);
+        console.log(result.body);
     });
 });
