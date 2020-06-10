@@ -5,16 +5,16 @@ import 'regenerator-runtime';
 require('dotenv').config();
 
 let serviceAccount = {
-    "type": "0",
-    "project_id": "0",
-    "private_key_id": "0",
-    "private_key": `${process.env.FIREBASE_API_KEY}`,
-    "client_email": "0",
-    "client_id": "0",
-    "auth_uri": "0",
-    "token_uri": "0",
-    "auth_provider_x509_cert_url": "0",
-    "client_x509_cert_url": "0"
+    "type": "",
+    "project_id": "",
+    "private_key_id": "",
+    "private_key": "",
+    "client_email": "",
+    "client_id": "",
+    "auth_uri": "",
+    "token_uri": "",
+    "auth_provider_x509_cert_url": "",
+    "client_x509_cert_url": ""
 }
 
 if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test') {
