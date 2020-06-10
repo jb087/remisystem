@@ -39,6 +39,7 @@ export default function useForm(initialFields) {
     [dispatch]
   );
   const setIsDuringProcessing = useCallback(
+    //NOSONAR
     (isDuringProcessing) =>
       dispatch({ type: SET_DURING_PROCESSING, isDuringProcessing }),
     [dispatch]

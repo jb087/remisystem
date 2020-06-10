@@ -43,9 +43,9 @@ export default function SignUp() {
         displayName,
       });
       forceUserAuthUpdate();
-    } catch (error) {
+    } catch (authError) {
       if (componentIsMounted.current) {
-        setError(error.message);
+        setError(authError.message);
       }
     } finally {
       if (componentIsMounted.current) {

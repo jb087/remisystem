@@ -54,6 +54,7 @@ const timestampToReadableFormat = (timestamp) => {
 };
 
 const cronToReadableFormat = (cron) => {
+  //NOSONAR
   const cronRegex = /^([*\d]*) ([*\d]*) ([*\d]*) ([*\d]*) ([*\d]*)$/;
   const match = cron.match(cronRegex);
 
