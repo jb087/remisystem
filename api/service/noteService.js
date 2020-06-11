@@ -78,15 +78,9 @@ exports.deleteNoteWithReminders = (noteId, response) => {
             throw error;
         }
 
-        if (process.env.NODE_ENV === 'dev') {
-            result.forEach(reminder => schedulerService.deleteReminder(reminder.ID));
-        }
+        result.forEach(reminder => schedulerService.deleteReminder(reminder.ID));
 
-        if (result.length === 0) {
-            deleteNote(noteId, response);
-        } else {
-            deleteReminders(noteId, response);
-        }
+        deleteReminders(noteId, response);
     })
 };
 
