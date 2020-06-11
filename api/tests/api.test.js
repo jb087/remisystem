@@ -180,7 +180,7 @@ describe('GET /api/notes-by-user', () => {
 describe('GET /api/note/:noteId/reminders', () => {
     it('When there is an unauthorized request the server returns 401.', async () => {
         // Act:
-        const result = await request.get(`/api/note/${noteId}/reminders`)
+        const result = await request.get(`/api/note/${noteId}/reminders`);
         // Result
         expect(result.status).toBe(401);
     });
@@ -370,7 +370,6 @@ describe('GET /api/notes', () => {
 
     it('When there is an authorized request, the server returns all notes. If there aren\'t any, an empty array is returned.', async () => {
         // Act:
-        const noteDescription = "test";
         const result = await request.get('/api/notes')
             .set('Authorization', `Bearer ${accessToken}`);
 
@@ -391,7 +390,6 @@ describe('GET /api/reminders', () => {
 
     it('When there is an authorized request, the server returns all notes. If there aren\'t any, an empty array is returned.', async () => {
         // Act:
-        const noteDescription = "test";
         const result = await request.get('/api/reminders')
             .set('Authorization', `Bearer ${accessToken}`);
 
