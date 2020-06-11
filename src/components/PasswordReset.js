@@ -25,7 +25,7 @@ export default function PasswordReset() {
     auth
       .sendPasswordResetEmail(email)
       .then(() => setSuccess('Reset email has been sent.'))
-      .catch((error) => setError(error.message))
+      .catch((emailResetError) => setError(emailResetError.message))
       .finally(() => setIsDuringProcessing(false));
   };
 

@@ -24,7 +24,7 @@ export default function NewNote() {
     setError(null);
 
     saveNote(getIdToken, fields.title, fields.description, newReminders)
-      .then((newNoteId) => setNewNoteId(newNoteId))
+      .then((fetchedNewNoteId) => setNewNoteId(fetchedNewNoteId))
       .catch(() => {
         setError('Error, note has not been saved.');
         setIsSaving(false);

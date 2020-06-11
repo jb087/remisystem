@@ -6,9 +6,12 @@ const reminderService = require('../service/reminderService');
 const router = express.Router();
 
 router.use(function (request, response, next) {
+    //NOSONAR
     response.header('Access-Control-Allow-Origin', '*');
+    //NOSONAR   
     response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     if (request.method === 'OPTIONS') {
+        //NOSONAR
         response.header('Access-Control-Allow-Methods', 'PUT, POST, DELETE, GET');
         return response.status(200).json({});
     }
