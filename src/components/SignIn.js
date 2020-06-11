@@ -22,8 +22,8 @@ export default function SignIn() {
 
     auth
       .signInWithEmailAndPassword(email, password)
-      .catch((error) => {
-        setError(error.message);
+      .catch((authError) => {
+        setError(authError.message);
       })
       .finally(() => setIsDuringProcessing(false));
   };

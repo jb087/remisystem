@@ -91,3 +91,20 @@ function onListening() {
 }
 
 schedulerService.startSchedulerService();
+
+/**
+ * Socket
+ */
+const authSocketService = require('../service/authSocketService');
+const notificationService = require('../service/notificationService');
+const io = require('socket.io')(server);
+
+io.use(authSocketService)
+
+io.on('connection', (socket) => {
+  notificationService.addUserSocket(socket.user.uid, socket)
+
+  socket.on('disconnect', () => {
+    notificationService.deleteUserSocket(socket.user.uid)
+  });
+});

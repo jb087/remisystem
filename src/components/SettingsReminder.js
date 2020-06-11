@@ -47,8 +47,8 @@ export default function SettingsReminder() {
     try {
       await setUserSettings(uid, { sendEmailReminders });
       setSuccess('Settings have been changed.');
-    } catch (error) {
-      setError(error.message);
+    } catch (settingsError) {
+      setError(settingsError.message);
     } finally {
       setIsDuringProcessing(false);
     }
