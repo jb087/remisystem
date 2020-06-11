@@ -84,11 +84,30 @@ describe('GET /api/notes-by-user', () => {
     });
 });
 
-describe('POST, PUT and DELETE note', () => {
-    const noteTitle = "created note";
-    const noteDescription = "created";
+describe('POST, PUT and DELETE path for notes', () => {
+    let noteTitle = "created note";
+    let noteDescription = "created";
     let noteId;
-    it('When there is an authorized request the server creates a new note.', async () => {
+    it('When there is an unauthorized request the server returns 401.', async () => {
+        // Arrange:
+        const reqBody = {
+            "note": {
+                "title": noteTitle,
+                "description": noteDescription
+            },
+            "reminders": [
+            ]
+        };
+
+        // Act: 
+        const result = await request.post('/api/note-with-reminders')
+            .send(reqBody);
+
+        // Assert:
+        expect(result.status).toBe(401);
+        noteId = result.body;
+    });
+    it('When there is an authorized request the server creates a new note without reminders.', async () => {
         // Arrange:
         const reqBody = {
             "note": {
@@ -119,7 +138,36 @@ describe('POST, PUT and DELETE note', () => {
         expect(result.body.title === noteTitle).toBe(true);
         expect(result.body.description === noteDescription).toBe(true);
     });
-    it(`When note with given id exists then it's removed from db and 200 status is sent as response`, async () => {
+    it('Next, modifying the note.', async () => {
+        // Arrange:
+        noteTitle = "created modified note";
+        noteDescription = "created and modified";
+        
+        const reqBody = {
+                "title": noteTitle,
+                "description": noteDescription
+            };
+
+        // Act: 
+        const result = await request.put(`/api/note/${noteId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send(reqBody);
+
+        // Assert:
+        expect(result.status).toBe(200);
+    });
+    it('Now checking if the note was modified correctly.', async () => {
+        // Act:
+
+        const result = await request.get(`/api/note/${noteId}`)
+            .set('Authorization', `Bearer ${accessToken}`);
+
+        // Result
+        expect(result.status).toBe(200);
+        expect(result.body.title === noteTitle).toBe(true);
+        expect(result.body.description === noteDescription).toBe(true);
+    });
+    it(`When note with a given id exists then it's removed from db and 200 status is sent as the response`, async () => {
         
         // Act:
         const result = await request.delete(`/api/note/${noteId}`)
@@ -128,5 +176,121 @@ describe('POST, PUT and DELETE note', () => {
         // Assert:
         expect(result.status).toBe(200);
     });
+    it(`Checking if the note was deleted correctly.`, async () => {
+
+        // Act:
+        const result = await request.get(`/api/note/${noteId}`)
+            .set('Authorization', `Bearer ${accessToken}`);
+
+        // Assert:
+        expect(result.status).toBe(200);
+        expect(result.body === "").toBe(true);
+    });
     
+});
+
+
+describe('POST and DELETE path for notes with reminders', () => {
+    let noteTitle = "created note";
+    let noteDescription = "created";
+    let reminder = "0 */30 * ? * *";
+    let noteId;
+    let reminderId;
+    it('When there is an unauthorized request the server returns 401.', async () => {
+        // Arrange:
+        const reqBody = {
+            "note": {
+                "title": noteTitle,
+                "description": noteDescription
+            },
+            "reminders": [
+                {
+                    "time": reminder
+                }
+            ]
+        };
+
+        // Act: 
+        const result = await request.post('/api/note-with-reminders')
+            .send(reqBody);
+
+        // Assert:
+        expect(result.status).toBe(401);
+        noteId = result.body;
+    });
+    it('When there is an authorized request the server creates a new note with a reminder.', async () => {
+        // Arrange:
+        const reqBody = {
+            "note": {
+                "title": noteTitle,
+                "description": noteDescription
+            },
+            "reminders": [
+                {
+                    "time": reminder
+                }
+            ]
+        };
+
+        // Act: 
+        const result = await request.post('/api/note-with-reminders')
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send(reqBody);
+
+        // Assert:
+        expect(result.status).toBe(200);
+        noteId = result.body;
+    });
+    it('Now checking if the note was created correctly.', async () => {
+        // Act:
+
+        const result = await request.get(`/api/note/${noteId}`)
+            .set('Authorization', `Bearer ${accessToken}`);
+
+        // Result
+        expect(result.status).toBe(200);
+        expect(result.body.title === noteTitle).toBe(true);
+        expect(result.body.description === noteDescription).toBe(true);
+    });
+    it('Now checking if the reminder was created correctly.', async () => {
+        // Act:
+        const result = await request.get(`/api/note/${noteId}/reminders`)
+            .set('Authorization', `Bearer ${accessToken}`);
+
+        // Result
+        expect(result.status).toBe(200);
+        console.log(result.body);
+        reminderId = result.body[0].id;
+        console.log(reminderId);
+        expect(result.body[0].noteId === noteId).toBe(true);
+        expect(result.body[0].time === reminder).toBe(true);
+    });
+    it('Next, deleting the reminder.', async () => {
+        // Act: 
+        const result = await request.delete(`/api/reminder/${reminderId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+
+        // Assert:
+        expect(result.status).toBe(200);
+    });
+    it('Now checking if the reminder was deleted correctly.', async () => {
+        // Act:
+
+        const result = await request.get(`/api/note/${noteId}/reminders`)
+            .set('Authorization', `Bearer ${accessToken}`);
+
+        // Result
+        expect(result.status).toBe(200);
+        expect(result.body === "").toBe(true);
+    });
+    it(`When note with a given id exists then it's removed from db and 200 status is sent as the response`, async () => {
+
+        // Act:
+        const result = await request.delete(`/api/note/${noteId}`)
+            .set('Authorization', `Bearer ${accessToken}`);
+
+        // Assert:
+        expect(result.status).toBe(200);
+    });
+
 });
