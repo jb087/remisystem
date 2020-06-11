@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "build-server-file": "babel app_es6.js --out-file app.js",
-    "test": "jest"
+    "test": "jest --forceExit --env=node"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -39,5 +39,12 @@
     "jest": "^26.0.1",
     "nodemon": "^2.0.3",
     "supertest": "^4.0.2"
+  },
+  "jest": {
+    "forceExit": true,
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
