@@ -25,18 +25,21 @@ let reminder2 = "0 */15 * ? * *";
 let reminderId;
 let reminderId2;
 
+function getNoteWithEmptyReminders() {
+    return {
+        "note": {
+            "title": noteTitle,
+            "description": noteDescription
+        },
+        "reminders": []
+    };
+}
+
 describe('POST /api/note-with-reminder - without reminders', () => {
     
     it('When there is an unauthorized request the server returns 401.', async () => {
         // Arrange:
-        const reqBody = {
-            "note": {
-                "title": noteTitle,
-                "description": noteDescription
-            },
-            "reminders": [
-            ]
-        };
+        const reqBody = getNoteWithEmptyReminders();
 
         // Act: 
         const result = await request.post('/api/note-with-reminders')
@@ -48,14 +51,7 @@ describe('POST /api/note-with-reminder - without reminders', () => {
 
     it('When there is an authorized request the server creates a new note without reminders.', async () => {
         // Arrange:
-        const reqBody = {
-            "note": {
-                "title": noteTitle,
-                "description": noteDescription
-            },
-            "reminders": [
-            ]
-        };
+        const reqBody = getNoteWithEmptyReminders();
 
         // Act: 
         const result = await request.post('/api/note-with-reminders')
@@ -69,14 +65,18 @@ describe('POST /api/note-with-reminder - without reminders', () => {
     
 });
 
+function getNewReminder() {
+    return {
+        "noteId": noteId,
+        "time": reminder
+    };
+}
+
 describe('POST /api/reminder', () => {
     
     it('When there is an unauthorized request the server returns 401.', async () => {
         // Arrange:
-        const reqBody = {
-            "noteId": noteId,
-            "time": reminder
-        };
+        const reqBody = getNewReminder();
 
         // Act: 
         const result = await request.post('/api/reminder')
@@ -88,10 +88,7 @@ describe('POST /api/reminder', () => {
 
     it('When there is an authorized request, the server creates a new reminder.', async () => {
         // Arrange:
-        const reqBody = {
-            "noteId": noteId,
-            "time": reminder
-        };
+        const reqBody = getNewReminder();
 
         // Act: 
         const result = await request.post('/api/reminder')
@@ -104,21 +101,25 @@ describe('POST /api/reminder', () => {
     
 });
 
+function getNoteWithReminder() {
+    return {
+        "note": {
+            "title": noteTitle2,
+            "description": noteDescription2
+        },
+        "reminders": [
+            {
+                "time": reminder2
+            }
+        ]
+    };
+}
+
 describe('POST /api/note-with-reminder - with a reminder', () => {
 
     it('When there is an unauthorized request the server returns 401.', async () => {
         // Arrange:
-        const reqBody = {
-            "note": {
-                "title": noteTitle2,
-                "description": noteDescription2
-            },
-            "reminders": [
-                {
-                    "time": reminder2
-                }
-            ]
-        };
+        const reqBody = getNoteWithReminder();
 
         // Act: 
         const result = await request.post('/api/note-with-reminders')
@@ -131,17 +132,7 @@ describe('POST /api/note-with-reminder - with a reminder', () => {
 
     it('When there is an authorized request the server creates a new note with a reminder.', async () => {
         // Arrange:
-        const reqBody = {
-            "note": {
-                "title": noteTitle2,
-                "description": noteDescription2
-            },
-            "reminders": [
-                {
-                    "time": reminder2
-                }
-            ]
-        };
+        const reqBody = getNoteWithReminder();
 
         // Act: 
         const result = await request.post('/api/note-with-reminders')
@@ -214,17 +205,20 @@ describe('GET /api/note/:noteId/reminders', () => {
 });
 
 
+function getNewNote() {
+    return {
+        "title": noteTitle,
+        "description": noteDescription
+    };
+}
+
 describe('PUT /api/note/:id', () => {
     
     it('When there is an unauthorized request the server returns 401.', async () => {
         // Arrange:
         noteTitle = "created modified note";
         noteDescription = "created and modified";
-
-        const reqBody = {
-            "title": noteTitle,
-            "description": noteDescription
-        };
+        const reqBody = getNewNote();
 
         // Act: 
         const result = await request.put(`/api/note/${noteId}`)
@@ -238,11 +232,7 @@ describe('PUT /api/note/:id', () => {
         // Arrange:
         noteTitle = "created modified note";
         noteDescription = "created and modified";
-
-        const reqBody = {
-            "title": noteTitle,
-            "description": noteDescription
-        };
+        const reqBody = getNewNote();
 
         // Act: 
         const result = await request.put(`/api/note/${noteId}`)
