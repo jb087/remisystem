@@ -140,9 +140,12 @@ describe('GET /api/notes-by-user', () => {
 
         expect(result.status).toBe(200);
         expect(result.body.length).toBe(2);
-        expect(result.body.some(note => note.id === noteId && note.title === noteTitle && note.description === noteDescription)).toBe(true);
-        expect(result.body.some(note => note.id === noteId2 && note.title === noteTitle2 && note.description === noteDescription2)).toBe(true);
-
+        expect(result.body.some(note => note.id === noteId)).toBe(true);
+        expect(result.body.some(note => note.title === noteTitle)).toBe(true);
+        expect(result.body.some(note => note.description === noteDescription)).toBe(true);
+        expect(result.body.some(note => note.id === noteId2)).toBe(true);
+        expect(result.body.some(note => note.title === noteTitle2)).toBe(true);
+        expect(result.body.some(note => note.description === noteDescription2)).toBe(true);
     });
 });
 
@@ -288,12 +291,11 @@ describe('GET /api/notes', () => {
         expect(result.status).toBe(401);
     });
 
-    it('When there is an authorized request, the server returns all notes. If there aren\'t any, an empty array is returned.', async () => {
+    it('When there is an authorized request, the server returns all notes. If there are not any, an empty array is returned.', async () => {
         const result = await request.get('/api/notes')
             .set('Authorization', `Bearer ${accessToken}`);
 
         expect(result.status).toBe(200);
-        console.log(result.body);
         expect(Array.isArray(result.body) && result.body.length).toBe(0);
     });
 });
@@ -305,12 +307,11 @@ describe('GET /api/reminders', () => {
         expect(result.status).toBe(401);
     });
 
-    it('When there is an authorized request, the server returns all notes. If there aren\'t any, an empty array is returned.', async () => {
+    it('When there is an authorized request, the server returns all reminders. If there are not any, an empty array is returned.', async () => {
         const result = await request.get('/api/reminders')
             .set('Authorization', `Bearer ${accessToken}`);
 
         expect(result.status).toBe(200);
-        console.log(result.body);
         expect(Array.isArray(result.body) && result.body.length).toBe(0);
     });
 });
