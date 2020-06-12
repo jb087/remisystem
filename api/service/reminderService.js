@@ -55,7 +55,9 @@ exports.deleteReminder = (id, response) => {
             throw error;
         }
 
-        schedulerService.deleteReminder(id);
+        if (process.env.NODE_ENV === 'dev') {
+            schedulerService.deleteReminder(id);
+        }
 
         response.sendStatus(200)
     })
