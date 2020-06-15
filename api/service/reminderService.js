@@ -15,7 +15,8 @@ let db = new sqlite.Database(dbPath, (error) => {
 exports.getReminders = (response) => {
     db.all("SELECT * FROM REMINDER", function (error, result) {
         if (error) {
-            throw error;
+            console.log(error);
+            return response.status(500).send(error);
         }
 
         const reminders = result.map(reminder => new Reminder(reminder.ID, reminder.NOTE_ID, reminder.TIME));
@@ -27,7 +28,8 @@ exports.getReminders = (response) => {
 exports.getRemindersByNoteId = (noteId, response) => {
     db.all("SELECT * FROM REMINDER WHERE NOTE_ID = ?", noteId, function (error, result) {
         if (error) {
-            throw error;
+            console.log(error);
+            return response.status(500).send(error);
         }
 
         const reminders = result.map(reminder => new Reminder(reminder.ID, reminder.NOTE_ID, reminder.TIME));
@@ -42,7 +44,8 @@ exports.createReminder = (body, response) => {
     db.run("INSERT INTO REMINDER (ID, NOTE_ID, TIME) VALUES (?, ?, ?)", [reminder.id, reminder.noteId, reminder.time],
         function (error) {
             if (error) {
-                throw error;
+                console.log(error);
+                return response.status(500).send(error);
             }
 
             response.status(200).json(reminder);
@@ -52,7 +55,8 @@ exports.createReminder = (body, response) => {
 exports.deleteReminder = (id, response) => {
     db.run("DELETE FROM REMINDER WHERE ID = ?", id, function(error) {
         if (error) {
-            throw error;
+            console.log(error);
+            return response.status(500).send(error);
         }
 
         if (process.env.NODE_ENV === 'dev') {
