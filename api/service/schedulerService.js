@@ -79,6 +79,8 @@ function sendReminder(reminder) {
 }
 
 exports.deleteReminder = (id) => {
+    console.log(jobs);
+    console.log(id);
     jobs.get(id).cancel();
     jobs.delete(id);
 };
