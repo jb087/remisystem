@@ -49,13 +49,17 @@ function addJob(reminder) {
 function scheduleCronJob(reminder) {
     let job = schedule.scheduleJob(reminder.time, () => scheduledTask(reminder));
 
-    jobs.set(reminder.id, job);
+    if (job) {
+        jobs.set(reminder.id, job);
+    }
 }
 
 function scheduleDateJob(reminder) {
     let job = schedule.scheduleJob(new Date(parseInt(reminder.time, 10)), () => scheduledTask(reminder));
 
-    jobs.set(reminder.id, job);
+    if (job) {
+        jobs.set(reminder.id, job);
+    }
 }
 
 function scheduledTask(reminder) {
@@ -79,6 +83,8 @@ function sendReminder(reminder) {
 }
 
 exports.deleteReminder = (id) => {
-    jobs.get(id).cancel();
-    jobs.delete(id);
+    if (jobs.get(id)) {
+        jobs.get(id).cancel();
+        jobs.delete(id);
+    }
 };
