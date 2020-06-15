@@ -53,11 +53,7 @@ function scheduleCronJob(reminder) {
 }
 
 function scheduleDateJob(reminder) {
-    console.log(reminder.time);
-    console.log(new Date(reminder.time));
-    console.log(parseInt(reminder.time));
-    console.log(new Date(parseInt(reminder.time)));
-    let job = schedule.scheduleJob(new Date(parseInt(reminder.time)), () => scheduledTask(reminder));
+    let job = schedule.scheduleJob(new Date(parseInt(reminder.time, 10) + 7200000), () => scheduledTask(reminder));
 
     jobs.set(reminder.id, job);
 }
